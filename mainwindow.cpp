@@ -9,8 +9,7 @@
 #include <QTimer>
 #include <QDateTime>
 #include <QDir>
-#include "LED_RS232_API.h"
-#include "LED_serverAPI.h"
+
 #include <pcl/io/pcd_io.h>
 #include <thread>
 #include <QDebug>
@@ -31,9 +30,29 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    this->setWindowFlags(Qt::FramelessWindowHint);
-    this->ui->widgetTitle->setParentWidget(this);
-    this->setWindowIcon(QIcon(":/images/leishen.ico"));
+    initUi();
+
+    fs =new FileSystem();
+    Ali = new AliSmsAPIClient();
+
+    timer = new QTimer(this);
+    saveMovie_timer=new QTimer(this);
+    sendSmsTimer = new QTimer(this);
+
+    maindeal = new Maindeal(addlidar);
+
+    Creat_DataFileDir();// 启动先创建文件夹
+    ReadDevice();
+
+
+//    qRegisterMetaType<Object>("Object");
+//    qRegisterMetaType<QString>("QString");
+    //////////////////////////////////////////////////
+
+
+    flagAllCloud = true;
+    flagPartCloud = false;
+
     ClustemSwitch = true;//三维聚类开关
     viewer_Cloud_id = 0;
     alarm_flag = 0;
@@ -41,8 +60,98 @@ MainWindow::MainWindow(QWidget *parent) :
     isShow = true;
     isTrick = false;
     isSendSms = true;
-    getCalibAngle();
     //pushButton左图标右文字
+
+
+    ui->qvtkWidget->SetRenderWindow(this->maindeal->getViewr()->getRenderWindow());
+    this->maindeal->getViewr()->setupInteractor(ui->qvtkWidget->GetInteractor(), ui->qvtkWidget->GetRenderWindow());
+    ui->qvtkWidget->update();
+    this->maindeal->getViewr()->addCoordinateSystem(1.0);
+    this->maindeal->getViewr()->initCameraParameters();
+
+    //摄像头
+
+    this->maindeal->getViewr()->setCameraPosition(addlidar->data.pos_x, addlidar->data.pos_y, addlidar->data.pos_z,\
+                              addlidar->data.view_x,addlidar->data.view_y,addlidar->data.view_z,\
+                              addlidar->data.up_x, addlidar->data.up_y, addlidar->data.up_z);
+
+    this->maindeal->getLidarClustem()->setClusterTolerance(addlidar->data.clusterTolerance);
+    this->maindeal->getLidarClustem()->setMaxClusterSize(addlidar->data.maxClusterSize);
+    this->maindeal->getLidarClustem()->setMinClusterSize(addlidar->data.minClusterSize);
+
+    this->maindeal->getPtz()->PTZ_init();//该函数包含有回到预置点GOTO和开始巡航
+    this->maindeal->getPtz()->start();
+    ui->textEdit->append(this->maindeal->getPtz()->error);
+    ui->textEdit->append(this->maindeal->getPtz()->mas);
+    showMovie();
+
+
+
+    if("CH128X1" == addlidar->data.lidarModel)
+    {
+        qRegisterMetaType<struct LidarDataCHXXX>("struct LidarDataCHXXX");
+        getCH128X1 = new GetlidarCH128X1(addlidar->data.lidarPort);
+        connect(getCH128X1, SIGNAL(SendData(struct LidarDataCHXXX)), this, SLOT(CalculateCoordinatesCH128X1(struct LidarDataCHXXX)));
+        getCH128X1->start();
+    }
+    else if("C16" == addlidar->data.lidarModel)
+    {
+        qRegisterMetaType<struct LidarData>("struct LidarData");
+        getC16 = new GetlidarC16(addlidar->data.lidarPort);
+        connect(getC16, SIGNAL(SendData(struct LidarData)), this, SLOT(CalculateCoordinates(struct LidarData)));
+        getC16->start();
+    }
+
+
+
+    ReadConfig();//读取配置文件参数并更新
+
+    timer->start(10);
+    sendSmsStatus = false;
+
+    if(0 == saveDataStatus)
+    {
+        ui->toolButton_savedata->setStyleSheet("border-image: url(:/images/OFF.png);");
+    }
+    if(0 == inAalarmLampStatus)
+    {
+        ui->toolButton_indoorlight->setStyleSheet("border-image: url(:/images/OFF.png);");
+    }
+    if(0 == outAalarmLampStatus)
+    {
+        ui->toolButton_Portlight->setStyleSheet("border-image: url(:/images/OFF.png);");
+    }
+
+    this->showMaximized();
+
+    initConnect();
+
+}
+
+MainWindow::~MainWindow()
+{
+    if(saveMovie_timer->isActive())
+    {
+        saveMovie_timer->stop();
+    }
+    delete ui;
+}
+
+void MainWindow::initUi()
+{
+    setROI = new SetROI();
+    addlidar =new AddLidar();
+    paintarea =new PaintArea();
+    smsDialog = new SMSDialog(this);
+    paboutDialog = new aboutDialog(this);
+
+    view_Cluster_group =  new QButtonGroup();
+    view_Area_group    =  new QButtonGroup();
+    view_Cloud_group   =  new QButtonGroup();
+
+    this->setWindowFlags(Qt::FramelessWindowHint);
+    this->ui->widgetTitle->setParentWidget(this);
+    this->setWindowIcon(QIcon(":/images/leishen.ico"));
 
     ui->pushButton->setIcon(QIcon(tr(":/images/leishen.ico"))); //给按钮添加图标
     ui->pushButton->setIconSize(QSize(26,26));//重置图标大小
@@ -53,21 +162,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->pushButton_sms->setIcon(QIcon(tr(":/images/sms.png")));
     ui->pushButton_sms->setIconSize(QSize(26,26));
 
-    viewer.reset (new pcl::visualization::PCLVisualizer ("viewer", false));
-
-    ui->qvtkWidget->SetRenderWindow(viewer->getRenderWindow());
-
-    viewer->setupInteractor(ui->qvtkWidget->GetInteractor(), ui->qvtkWidget->GetRenderWindow());
-
-    ui->qvtkWidget->update();
-
-    viewer->addCoordinateSystem(1.0);
-
-    viewer->initCameraParameters();
     /*******设置按钮分组***********************************************************/
-    view_Cluster_group =  new QButtonGroup();
-    view_Area_group    =  new QButtonGroup();
-    view_Cloud_group   =  new QButtonGroup();
 
     view_Cluster_group->setExclusive(true);
     view_Area_group->setExclusive(true);//设置互斥
@@ -86,155 +181,63 @@ MainWindow::MainWindow(QWidget *parent) :
     view_Cloud_group->addButton(ui->radioButton_cloud_ob,1);
     view_Cloud_group->addButton(ui->radioButton_cloud_none,2);
     ui->radioButton_Cloud_all->setChecked(1);
-    flagAllCloud = true;
-    flagPartCloud = false;
 
+    paintarea->scroll = setROI->scrollarea;
+    setROI->scrollarea->takeWidget();
+    setROI->scrollarea->setWidget(paintarea);
 
+}
+
+void MainWindow::initConnect()
+{
     connect(view_Cluster_group,SIGNAL(buttonClicked(int)),this,SLOT(slot_view_Cluster_group(int)));
     connect(view_Area_group,SIGNAL(buttonClicked(int)),this,SLOT(slot_view_Area_group(int)));
     connect(view_Cloud_group,SIGNAL(buttonClicked(int)),this,SLOT(slot_view_Cloud_group(int)));
     connect(ui->widgetTitle,&MainTitleBar::sig_about_clicked,this,&MainWindow::showAbout);
     /*************************************************************************************************/
-    //行人轨迹
-    for(int i = 0;i < 255;i++)
-    {
-        Clu_cloud[i].reset(new pcl::PointCloud<pcl::PointXYZRGB>);
-    }
-    allcloud.reset(new pcl::PointCloud<pcl::PointXYZRGB>);
-    saveDataFlag = 0;
-    paintarea =new PaintArea();
-    setROI = new SetROI();
-    paintarea->scroll = setROI->scrollarea;
-    setROI->scrollarea->takeWidget();
-    setROI->scrollarea->setWidget(paintarea);
+
+    /*******界面按钮控制摄像头转动************************************************************************/
+    connect(ui->toolButton_up,SIGNAL(pressed()),this->maindeal->getPtz(),SLOT(OnButtonUpChanged()));
+    connect(ui->toolButton_up,SIGNAL(released()),this->maindeal->getPtz(),SLOT(OffButtonUpChanged()));
+    connect(ui->toolButton_down,SIGNAL(pressed()),this->maindeal->getPtz(),SLOT(OnButtonDownChanged()));
+    connect(ui->toolButton_down,SIGNAL(released()),this->maindeal->getPtz(),SLOT(OffButtonDownChanged()));
+    connect(ui->toolButton_left,SIGNAL(pressed()),this->maindeal->getPtz(),SLOT(OnButtonLeftChanged()));
+    connect(ui->toolButton_left,SIGNAL(released()),this->maindeal->getPtz(),SLOT(OffButtonLeftChanged()));
+    connect(ui->toolButton_right,SIGNAL(pressed()),this->maindeal->getPtz(),SLOT(OnButtonRightChanged()));
+    connect(ui->toolButton_right,SIGNAL(released()),this->maindeal->getPtz(),SLOT(OffButtonRightChanged()));
+
+    connect(ui->toolButton,SIGNAL(pressed()),this->maindeal->getPtz(),SLOT(OnButtonInChanged()));
+    connect(ui->toolButton,SIGNAL(released()),this->maindeal->getPtz(),SLOT(OffButtonInChanged()));
+    connect(ui->toolButton_2,SIGNAL(pressed()),this->maindeal->getPtz(),SLOT(OnButtonOutChanged()));
+    connect(ui->toolButton_2,SIGNAL(released()),this->maindeal->getPtz(),SLOT(OffButtonOutChanged()));
+
+
+    connect(ui->toolButton_3,SIGNAL(pressed()),this->maindeal->getPtz(),SLOT(OnButtonNearChanged()));
+    connect(ui->toolButton_3,SIGNAL(released()),this->maindeal->getPtz(),SLOT(OffButtonNearChanged()));
+    connect(ui->toolButton_4,SIGNAL(pressed()),this->maindeal->getPtz(),SLOT(OnButtonFarChanged()));
+    connect(ui->toolButton_4,SIGNAL(released()),this->maindeal->getPtz(),SLOT(OffButtonFarChanged()));
+
+    connect(ui->toolButton_5,SIGNAL(pressed()),this->maindeal->getPtz(),SLOT(OnButtonOpenChanged()));
+    connect(ui->toolButton_5,SIGNAL(released()),this->maindeal->getPtz(),SLOT(OffButtonOpenChanged()));
+    connect(ui->toolButton_6,SIGNAL(pressed()),this->maindeal->getPtz(),SLOT(OnButtonCloseChanged()));
+    connect(ui->toolButton_6,SIGNAL(released()),this->maindeal->getPtz(),SLOT(OffButtonCloseChanged()));
+    /*******************************************************************************************************************/
 
     connect(paintarea, SIGNAL(sigShowData()),this,SLOT(showData()));
-
     connect(setROI,SIGNAL(sigChangeArea_index(int)),paintarea,SLOT(UpdateArea_index(int)));
     connect(setROI,SIGNAL(sigaltablepaint()),this,SLOT(updatePainter2D()));
 
-
-    fs =new FileSystem();
-    qRegisterMetaType<Object>("Object");
-    qRegisterMetaType<QString>("QString");
-
-
-    lidarClustem = new LidarClustem;
-    connect(lidarClustem, SIGNAL(SendClus_Object(QVariant)), this, SLOT(showClustem_Obj(QVariant)));
-
-    addlidar =new AddLidar();
+    connect(this->maindeal->getLidarClustem(), SIGNAL(SendClus_Object(QVariant)), this, SLOT(showClustem_Obj(QVariant)));
     connect(addlidar,SIGNAL(SendSet(SetData)),this,SLOT(addLidarSlot(SetData)));
-    //摄像头
-    m_ptz =new PTZ();
-    ReadDevice();
-    viewer->setCameraPosition(addlidar->data.pos_x, addlidar->data.pos_y, addlidar->data.pos_z,\
-                              addlidar->data.view_x,addlidar->data.view_y,addlidar->data.view_z,\
-                              addlidar->data.up_x, addlidar->data.up_y, addlidar->data.up_z);
-
-    lidarClustem->setClusterTolerance(addlidar->data.clusterTolerance);
-    lidarClustem->setMaxClusterSize(addlidar->data.maxClusterSize);
-    lidarClustem->setMinClusterSize(addlidar->data.minClusterSize);
-
-    m_ptz->PTZ_init();//该函数包含有回到预置点GOTO和开始巡航
-    m_ptz->start();
-    ui->textEdit->append(m_ptz->error);
-    ui->textEdit->append(m_ptz->mas);
-    showMovie();
-
-    /*******界面按钮控制摄像头转动************************************************************************/
-    connect(ui->toolButton_up,SIGNAL(pressed()),m_ptz,SLOT(OnButtonUpChanged()));
-    connect(ui->toolButton_up,SIGNAL(released()),m_ptz,SLOT(OffButtonUpChanged()));
-    connect(ui->toolButton_down,SIGNAL(pressed()),m_ptz,SLOT(OnButtonDownChanged()));
-    connect(ui->toolButton_down,SIGNAL(released()),m_ptz,SLOT(OffButtonDownChanged()));
-    connect(ui->toolButton_left,SIGNAL(pressed()),m_ptz,SLOT(OnButtonLeftChanged()));
-    connect(ui->toolButton_left,SIGNAL(released()),m_ptz,SLOT(OffButtonLeftChanged()));
-    connect(ui->toolButton_right,SIGNAL(pressed()),m_ptz,SLOT(OnButtonRightChanged()));
-    connect(ui->toolButton_right,SIGNAL(released()),m_ptz,SLOT(OffButtonRightChanged()));
-
-    connect(ui->toolButton,SIGNAL(pressed()),m_ptz,SLOT(OnButtonInChanged()));
-    connect(ui->toolButton,SIGNAL(released()),m_ptz,SLOT(OffButtonInChanged()));
-    connect(ui->toolButton_2,SIGNAL(pressed()),m_ptz,SLOT(OnButtonOutChanged()));
-    connect(ui->toolButton_2,SIGNAL(released()),m_ptz,SLOT(OffButtonOutChanged()));
-
-
-    connect(ui->toolButton_3,SIGNAL(pressed()),m_ptz,SLOT(OnButtonNearChanged()));
-    connect(ui->toolButton_3,SIGNAL(released()),m_ptz,SLOT(OffButtonNearChanged()));
-    connect(ui->toolButton_4,SIGNAL(pressed()),m_ptz,SLOT(OnButtonFarChanged()));
-    connect(ui->toolButton_4,SIGNAL(released()),m_ptz,SLOT(OffButtonFarChanged()));
-
-    connect(ui->toolButton_5,SIGNAL(pressed()),m_ptz,SLOT(OnButtonOpenChanged()));
-    connect(ui->toolButton_5,SIGNAL(released()),m_ptz,SLOT(OffButtonOpenChanged()));
-    connect(ui->toolButton_6,SIGNAL(pressed()),m_ptz,SLOT(OnButtonCloseChanged()));
-    connect(ui->toolButton_6,SIGNAL(released()),m_ptz,SLOT(OffButtonCloseChanged()));
-    /*******************************************************************************************************************/
-    if("CH128X1" == addlidar->data.lidarModel)
-    {
-        qRegisterMetaType<struct LidarDataCHXXX>("struct LidarDataCHXXX");
-        getCH128X1 = new GetlidarCH128X1(addlidar->data.lidarPort);
-        connect(getCH128X1, SIGNAL(SendData(struct LidarDataCHXXX)), this, SLOT(CalculateCoordinatesCH128X1(struct LidarDataCHXXX)));
-        getCH128X1->start();
-    }
-    else if("C16" == addlidar->data.lidarModel)
-    {
-        qRegisterMetaType<struct LidarData>("struct LidarData");
-        getC16 = new GetlidarC16(addlidar->data.lidarPort);
-        connect(getC16, SIGNAL(SendData(struct LidarData)), this, SLOT(CalculateCoordinates(struct LidarData)));
-        getC16->start();
-    }
-    //防护区域内点云
-    algonrithm =new Algonrithm(addlidar->data.resolution,addlidar->data.difference_threshold);
-    connect(algonrithm,SIGNAL(sigShow(lidarIntruder)),this,SLOT(showFiltcloud(lidarIntruder)));
-
-
-    ReadConfig();//读取配置文件参数并更新
-
-    QTimer *timer = new QTimer(this);
+    /********************************************************************************************************************/
     connect(timer,SIGNAL(timeout()),this,SLOT(scalePalyfram()));
-    timer->start(10);
-
-    // TODO:WUZHENFENG 20220407
-    // 添加报警器服务端线程
-    std::thread alarm_light_thread(StartAlarmLight);
-    alarm_light_thread.detach();
-    std::thread alarmIP_light_thread(StartAlarmLight_IP);
-    alarmIP_light_thread.detach();
-
-    saveMovie_timer=new QTimer(this);
     connect(saveMovie_timer,&QTimer::timeout,this,&MainWindow::onTimeout);
-
-    sendSmsTimer = new QTimer(this);
     connect(sendSmsTimer,&QTimer::timeout,this,&MainWindow::do_sendSms);
-    sendSmsStatus = false;
 
-    if(0 == saveDataStatus)
-    {
-        ui->toolButton_savedata->setStyleSheet("border-image: url(:/images/OFF.png);");
-    }
-    if(0 == inAalarmLampStatus)
-    {
-        ui->toolButton_indoorlight->setStyleSheet("border-image: url(:/images/OFF.png);");
-    }
-    if(0 == outAalarmLampStatus)
-    {
-        ui->toolButton_Portlight->setStyleSheet("border-image: url(:/images/OFF.png);");
-    }
+    //防护区域内点云
+    connect(this->maindeal->getAlgonrithm(),SIGNAL(sigShow(lidarIntruder)),this,SLOT(showFiltcloud(lidarIntruder)));
 
-    this->showMaximized();
-    Creat_DataFileDir();// 启动先创建文件夹
-    smsDialog = new SMSDialog(this);
-    paboutDialog = new aboutDialog(this);
-    Ali = new AliSmsAPIClient();
 }
-
-MainWindow::~MainWindow()
-{
-    if(saveMovie_timer->isActive())
-    {
-        saveMovie_timer->stop();
-    }
-    delete ui;
-}
-
 
 void MainWindow::Creat_DataFileDir()
 {
@@ -311,17 +314,17 @@ void MainWindow::onTimeout()
             ui->textEdit->append(QString("保存到文件失败 错误码:, %1").arg(NET_DVR_GetLastError()));
         }
     }
-    if(allcloud->points.size() > 0)
+    if(this->maindeal->getAllCloud()->points.size() > 0)
     {
         QString filePathName = QString::fromStdString(m_cloudFilePath) + strTime + ".pcd";
-        pcl::io::savePCDFileBinary(filePathName.toStdString(),*allcloud);
-        allcloud->points.clear();
-        allcloud->clear();
+        pcl::io::savePCDFileBinary(filePathName.toStdString(),*this->maindeal->getAllCloud());
+        this->maindeal->getAllCloud()->points.clear();
+        this->maindeal->getAllCloud()->clear();
     }
     saveTime--;
     if(0 == saveTime)
     {
-        saveDataFlag = 0;
+        this->maindeal->saveDataFlag = 0;
         saveTime = 10;
         saveFlag = 1;
         NET_DVR_StopSaveRealData(lRealPlayHandle); // 停止取流
@@ -367,18 +370,18 @@ void MainWindow::slot_view_Cluster_group(int id)
     }
     else if(id == 1)
     {
-        viewer->removeAllShapes();
+        this->maindeal->getViewr()->removeAllShapes();
         ui->qvtkWidget->update();
         ClustemSwitch = false;
         LEDContrlAPI(0);
         LEDContrlAPI_IP(addlidar->data.ledIp.c_str(),0);
         if(cruise_flag == 0)
         {
-            m_ptz->PTZ_Cruise_Open();
+            this->maindeal->getPtz()->PTZ_Cruise_Open();
             cruise_flag = 1;
         }
 
-        viewer->removeAllShapes();
+        this->maindeal->getViewr()->removeAllShapes();
     }
 }
 //区域图形显示模式
@@ -411,18 +414,18 @@ void MainWindow::slot_view_Cloud_group(int id)
 void MainWindow::addLidarSlot(SetData data)
 {
 
-    m_ptz->dist = data.setDis;
-    m_ptz->ang = data.setAng;
+    this->maindeal->getPtz()->dist = data.setDis;
+    this->maindeal->getPtz()->ang = data.setAng;
     XAngle = data.setXAngle;
     YAngle = data.setYAngle;
     Base_X = data.setBase_X;
     Base_Y = data.setBase_Y;
     paintarea->Radius = data.setRadius;
-    lidarClustem->setClusterTolerance(data.clusterTolerance);
-    lidarClustem->setMaxClusterSize(data.maxClusterSize);
-    lidarClustem->setMinClusterSize(data.minClusterSize);
-    algonrithm->setResolution(data.resolution);
-    algonrithm->setDifference_threshold(data.difference_threshold);
+    this->maindeal->getLidarClustem()->setClusterTolerance(data.clusterTolerance);
+    this->maindeal->getLidarClustem()->setMaxClusterSize(data.maxClusterSize);
+    this->maindeal->getLidarClustem()->setMinClusterSize(data.minClusterSize);
+    this->maindeal->getAlgonrithm()->setResolution(data.resolution);
+    this->maindeal->getAlgonrithm()->setDifference_threshold(data.difference_threshold);
 
     WriteDevice(data);
 }
@@ -511,10 +514,10 @@ void MainWindow::CalculateCoordinates(LidarData lidardata)
         }
     }
 
-    algonrithm->tCloud->clear();
-    *algonrithm->tCloud += *tCloud;
-    algonrithm->start();
-    algonrithm->wait();
+    this->maindeal->getAlgonrithm()->tCloud->clear();
+    *this->maindeal->getAlgonrithm()->tCloud += *tCloud;
+    this->maindeal->getAlgonrithm()->start();
+    this->maindeal->getAlgonrithm()->wait();
 
 
     paintarea->tCloud->clear();
@@ -525,81 +528,14 @@ void MainWindow::CalculateCoordinates(LidarData lidardata)
     if(viewer_Cloud_id ==0)
     {
         std::string name ="All_cloud";
-        viewer->removePointCloud(name);
-        viewer->addPointCloud(tCloud,name);
-        viewer->updatePointCloud(tCloud,name);
+        this->maindeal->getViewr()->removePointCloud(name);
+        this->maindeal->getViewr()->addPointCloud(tCloud,name);
+        this->maindeal->getViewr()->updatePointCloud(tCloud,name);
     }
     ui->qvtkWidget->update();
 
 }
 
-void MainWindow::getCalibAngle()
-{
-    //创建socket
-    int sock1 = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-    //定义地址
-    struct sockaddr_in sockAddr1;
-    sockAddr1.sin_family = AF_INET;
-    sockAddr1.sin_port = htons(2369);
-    sockAddr1.sin_addr.s_addr = inet_addr("192.168.1.102");
-    int retVal1 = bind(sock1, (struct sockaddr *)&sockAddr1, sizeof(sockAddr1));
-    unsigned int len1 = sizeof(sockaddr_in);
-    //接收数据
-    char recvBuf1[1206] = { 0 };
-    //获取套接字接收内容
-    int recvLen1 = recvfrom(sock1, recvBuf1, sizeof(recvBuf1), MSG_DONTWAIT, (struct sockaddr *)&sockAddr1, &len1);
-    if (recvLen1 > 0 &&recvBuf1[0] == -91 && recvBuf1[1] == -1 && recvBuf1[2] == 0 && recvBuf1[3] == 90) //接收到数据
-    {
-        //处理接收的数据
-        std::vector<unsigned char> data;
-        for (int i = 0; i < 1200; i++)
-        {
-            data.push_back(recvBuf1[i]);	//只保留每包数据的前1200个字节，去掉尾部4个字节时间戳，2个字节参数
-        }
-        //设备包中储存的雷达4个垂直prsimAngle角度
-        lidarA1 = (data[242] * 256 + data[243]) / 100.f;
-        lidarA2 = (data[244] * 256 + data[245]) / 100.f;
-        lidarA3 = (data[246] * 256 + data[247]) / 100.f;
-        lidarA4 = (data[248] * 256 + data[249]) / 100.f;
-        //角度转换
-        lidarA1 = lidarA1 > 327.68 ? 327.68 - lidarA1 : lidarA1;
-        lidarA2 = lidarA2 > 327.68 ? 327.68 - lidarA2 : lidarA2;
-        lidarA3 = lidarA3 > 327.68 ? 327.68 - lidarA3 : lidarA3;
-        lidarA4 = lidarA4 > 327.68 ? 327.68 - lidarA4 : lidarA4;
-        std::cout << "lidarA1: " << lidarA1  << "lidarA2: " << lidarA2 << "lidarA3: " << lidarA3  << "lidarA4: " << lidarA4 << std::endl;
-    }
-
-    if(lidarA1 == 0 && lidarA2 == 0 && lidarA3 == 0 && lidarA4 == 0)
-    {
-        prismAngle[0] = 0;
-        prismAngle[1] = -0.17;
-        prismAngle[2] = -0.34;
-        prismAngle[3] = -0.51;
-    }
-    else
-    {
-        prismAngle[0] = lidarA1;
-        prismAngle[1] = lidarA2;
-        prismAngle[2] = lidarA3;
-        prismAngle[3] = lidarA4;
-    }
-    float sinAngles[19000] = { 0 };
-    float cosAngles[19000] = { 0 };
-
-    for (int i = 0; i < 19000; i++)
-    {
-        sinAngles[i] = sin(i * PI / 18000);
-        cosAngles[i] = cos(i * PI / 18000);
-    }
-
-    for (int i = 0; i < 128; i++)
-    {
-        sinTheta_1[i] = sin(G_Angle[i / 4] * PI / 180.f);
-        sinTheta_2[i] = sin((prismAngle[i % 4]) * PI / 180.f);
-        cosTheta_1[i] = cos(G_Angle[ i / 4] * PI / 180.f);
-        cosTheta_2[i] = cos((prismAngle[i % 4]) * PI / 180.f);
-    }
-}
 
 void MainWindow::CalculateCoordinatesCH128X1(LidarDataCHXXX lidardata)
 {
@@ -677,26 +613,26 @@ void MainWindow::CalculateCoordinatesCH128X1(LidarDataCHXXX lidardata)
             }
         }
     }
-    algonrithm->tCloud->clear();
-    *algonrithm->tCloud += *tCloud;
-    algonrithm->start();
-    algonrithm->wait();
+    this->maindeal->getAlgonrithm()->tCloud->clear();
+    *this->maindeal->getAlgonrithm()->tCloud += *tCloud;
+    this->maindeal->getAlgonrithm()->start();
+    this->maindeal->getAlgonrithm()->wait();
 
 
     paintarea->tCloud->clear();
     *paintarea->tCloud  += *tCloud;
     paintarea->update();
-    if(1 == saveDataFlag)
+    if(1 == this->maindeal->saveDataFlag)
     {
-        *allcloud = *tCloud;
+        *this->maindeal->getAllCloud() = *tCloud;
     }
 
     if(viewer_Cloud_id ==0)
     {
         std::string name ="All_cloud";
-        viewer->removePointCloud(name);
-        viewer->addPointCloud(tCloud,name);
-        viewer->updatePointCloud(tCloud,name);
+        this->maindeal->getViewr()->removePointCloud(name);
+        this->maindeal->getViewr()->addPointCloud(tCloud,name);
+        this->maindeal->getViewr()->updatePointCloud(tCloud,name);
     }
 
     ui->qvtkWidget->update();
@@ -718,15 +654,15 @@ void MainWindow::showFiltcloud(lidarIntruder intruder)
     if(viewer_Cloud_id ==1)
     {
         std::string name ="All_cloud";
-        viewer->removePointCloud(name);
-        viewer->addPointCloud(intruder.tCloud,name);
-        viewer->updatePointCloud(intruder.tCloud,name);
+        this->maindeal->getViewr()->removePointCloud(name);
+        this->maindeal->getViewr()->addPointCloud(intruder.tCloud,name);
+        this->maindeal->getViewr()->updatePointCloud(intruder.tCloud,name);
     }
 
     //聚类
     if(tCloud->size()>0)
     {
-        lidarClustem->lidar_points->clear();
+        this->maindeal->getLidarClustem()->lidar_points->clear();
         if (ClustemSwitch == true)
         {
             for (int i = 0; i < tCloud->size(); i++)
@@ -735,14 +671,14 @@ void MainWindow::showFiltcloud(lidarIntruder intruder)
                 point.x = tCloud->at(i).x;
                 point.y = tCloud->at(i).y;
                 point.z = tCloud->at(i).z;
-                lidarClustem->lidar_points->push_back(point);
+                this->maindeal->getLidarClustem()->lidar_points->push_back(point);
             }
 
-            if (lidarClustem->m_stop == false)
+            if (this->maindeal->getLidarClustem()->m_stop == false)
             {
-                lidarClustem->m_stop = true;
-                lidarClustem->start();
-                lidarClustem->wait();
+                this->maindeal->getLidarClustem()->m_stop = true;
+                this->maindeal->getLidarClustem()->start();
+                this->maindeal->getLidarClustem()->wait();
             }
             cruise_flag = 0;
             start_time = std::chrono::system_clock::now();
@@ -755,7 +691,7 @@ void MainWindow::showFiltcloud(lidarIntruder intruder)
 //        std::cout << "cruise_flag ==  " << cruise_flag << std::endl;
         if (count_time > 60000)
         {
-            m_ptz->PTZ_Cruise_Open();
+            this->maindeal->getPtz()->PTZ_Cruise_Open();
             cruise_flag = 1;
 //            std::cout << "888882222count time milliseconds: " << count_time << std::endl;
         }
@@ -780,7 +716,7 @@ void MainWindow::showClustem_Obj(QVariant DataVar)
     for(int i = 0;i <  lastSize ; i++)
     {
         std::string cube = "box" + std::to_string(i);
-        viewer->removeShape(cube);
+        this->maindeal->getViewr()->removeShape(cube);
     }
     // TODO:20220407 根据聚类目标的个数来触发报警灯
     if(Cl_obj.Obj->size() > 0)
@@ -790,7 +726,7 @@ void MainWindow::showClustem_Obj(QVariant DataVar)
             if(!saveMovie_timer->isActive())
             {
                 saveMovie_timer->start(1000);
-                saveDataFlag = 1;
+                this->maindeal->saveDataFlag = 1;
             }
         }
         if(true == isSendSms)
@@ -837,7 +773,7 @@ void MainWindow::showClustem_Obj(QVariant DataVar)
         LEDContrlAPI_IP(addlidar->data.ledIp.c_str(),alarm_flag);
         for(int i =0; i < 255; i++)
         {
-            Clu_cloud[i]->clear();
+            this->maindeal->getCluCloud()[i]->clear();
         }
     }
     else if(alarm_flag == 0)
@@ -862,7 +798,7 @@ void MainWindow::showClustem_Obj(QVariant DataVar)
     for(int i =0; i < 255; i++)
     {
         std::string ball =  QString("ball%1").arg(i).toStdString();
-        viewer->removePointCloud(ball);
+        this->maindeal->getViewr()->removePointCloud(ball);
         ui->qvtkWidget->update();
     }
 
@@ -876,40 +812,40 @@ void MainWindow::showClustem_Obj(QVariant DataVar)
         point.r = 0;
         point.g = 255;
         point.b = 0;
-        if(Clu_cloud[Cl_obj.Obj->at(i).ID]->size() > 10)
+        if(this->maindeal->getCluCloud()[Cl_obj.Obj->at(i).ID]->size() > 10)
         {
 
-            Clu_cloud[Cl_obj.Obj->at(i).ID]->erase( Clu_cloud[Cl_obj.Obj->at(i).ID]->begin(), Clu_cloud[Cl_obj.Obj->at(i).ID]->begin()+5);
+            this->maindeal->getCluCloud()[Cl_obj.Obj->at(i).ID]->erase( this->maindeal->getCluCloud()[Cl_obj.Obj->at(i).ID]->begin(), this->maindeal->getCluCloud()[Cl_obj.Obj->at(i).ID]->begin()+5);
 
         }
 
-        if(Clu_cloud[Cl_obj.Obj->at(i).ID]->size() > 30)
+        if(this->maindeal->getCluCloud()[Cl_obj.Obj->at(i).ID]->size() > 30)
         {
 
-            Clu_cloud[Cl_obj.Obj->at(i).ID]->erase( Clu_cloud[Cl_obj.Obj->at(i).ID]->begin(), Clu_cloud[Cl_obj.Obj->at(i).ID]->begin()+20);
+            this->maindeal->getCluCloud()[Cl_obj.Obj->at(i).ID]->erase( this->maindeal->getCluCloud()[Cl_obj.Obj->at(i).ID]->begin(), this->maindeal->getCluCloud()[Cl_obj.Obj->at(i).ID]->begin()+20);
 
         }
 
 
         if(isTrick == true)
         {
-            Clu_cloud[Cl_obj.Obj->at(i).ID]->push_back(point);
+            this->maindeal->getCluCloud()[Cl_obj.Obj->at(i).ID]->push_back(point);
 
             std::string ball =  QString("ball%1").arg(Cl_obj.Obj->at(i).ID).toStdString();
 
 
-            viewer->removePointCloud(ball);
-            viewer->addPointCloud(Clu_cloud[Cl_obj.Obj->at(i).ID],ball);
-            //viewer->addPointCloud(Clu.at(Cl_obj.Obj->at(i).ID),ball);
-            viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE,4,ball);
-            viewer->updatePointCloud(Clu_cloud[Cl_obj.Obj->at(i).ID],ball);
+            this->maindeal->getViewr()->removePointCloud(ball);
+            this->maindeal->getViewr()->addPointCloud(this->maindeal->getCluCloud()[Cl_obj.Obj->at(i).ID],ball);
+            //this->maindeal->getViewr()->addPointCloud(Clu.at(Cl_obj.Obj->at(i).ID),ball);
+            this->maindeal->getViewr()->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE,4,ball);
+            this->maindeal->getViewr()->updatePointCloud(this->maindeal->getCluCloud()[Cl_obj.Obj->at(i).ID],ball);
         }
 
         std::string cube = "box" + std::to_string(i);
-        viewer->addCube(Cl_obj.Obj->at(i).xmin, Cl_obj.Obj->at(i).xmax, Cl_obj.Obj->at(i).ymin, Cl_obj.Obj->at(i).ymax, Cl_obj.Obj->at(i).zmin, Cl_obj.Obj->at(i).zmax, 0, 255, 0,cube);
-        viewer->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_REPRESENTATION, pcl::visualization::PCL_VISUALIZER_REPRESENTATION_SURFACE, cube);
-        viewer->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 1, 0, cube);
-        viewer->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_OPACITY, 0.4, cube);
+        this->maindeal->getViewr()->addCube(Cl_obj.Obj->at(i).xmin, Cl_obj.Obj->at(i).xmax, Cl_obj.Obj->at(i).ymin, Cl_obj.Obj->at(i).ymax, Cl_obj.Obj->at(i).zmin, Cl_obj.Obj->at(i).zmax, 0, 255, 0,cube);
+        this->maindeal->getViewr()->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_REPRESENTATION, pcl::visualization::PCL_VISUALIZER_REPRESENTATION_SURFACE, cube);
+        this->maindeal->getViewr()->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 1, 0, cube);
+        this->maindeal->getViewr()->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_OPACITY, 0.4, cube);
         if (minx > fabs(sqrt(Cl_obj.Obj->at(i).x * Cl_obj.Obj->at(i).x + Cl_obj.Obj->at(i).y * Cl_obj.Obj->at(i).y)))//平方根
         {
             minx = fabs(sqrt(Cl_obj.Obj->at(i).x * Cl_obj.Obj->at(i).x + Cl_obj.Obj->at(i).y * Cl_obj.Obj->at(i).y));
@@ -940,9 +876,9 @@ void MainWindow::SearchIntruder(Object obj)
     float r = sqrt(point.x*point.x + point.y*point.y);//平方根,距离原点距离
     float horizontal = atan(obj.x / obj.y) / PI * 180;
     float azimuth = atan(obj.z / obj.y) /  PI * 180;
-    m_ptz->war_horizontal = horizontal;
-    m_ptz->war_azimuth = azimuth;
-    m_ptz->war_dist = r;
+    this->maindeal->getPtz()->war_horizontal = horizontal;
+    this->maindeal->getPtz()->war_azimuth = azimuth;
+    this->maindeal->getPtz()->war_dist = r;
 
 }
 
@@ -1001,20 +937,20 @@ void MainWindow::addcuboid(Object obj, int id)
     p8.y = obj.y - obj.width / 2;
     p8.z = obj.z - obj.height / 2;
 
-    viewer->addLine(p1, p2, 0, 1, 0, line1);
-    viewer->addLine(p2, p3, 0, 1, 0, line2);
-    viewer->addLine(p3, p4, 0, 1, 0, line3);
-    viewer->addLine(p1, p4, 0, 1, 0, line4);
+    this->maindeal->getViewr()->addLine(p1, p2, 0, 1, 0, line1);
+    this->maindeal->getViewr()->addLine(p2, p3, 0, 1, 0, line2);
+    this->maindeal->getViewr()->addLine(p3, p4, 0, 1, 0, line3);
+    this->maindeal->getViewr()->addLine(p1, p4, 0, 1, 0, line4);
 
-    viewer->addLine(p5, p6, 0, 1, 0, line5);
-    viewer->addLine(p6, p7, 0, 1, 0, line6);
-    viewer->addLine(p7, p8, 0, 1, 0, line7);
-    viewer->addLine(p8, p5, 0, 1, 0, line8);
+    this->maindeal->getViewr()->addLine(p5, p6, 0, 1, 0, line5);
+    this->maindeal->getViewr()->addLine(p6, p7, 0, 1, 0, line6);
+    this->maindeal->getViewr()->addLine(p7, p8, 0, 1, 0, line7);
+    this->maindeal->getViewr()->addLine(p8, p5, 0, 1, 0, line8);
 
-    viewer->addLine(p1, p5, 0, 1, 0, line9);
-    viewer->addLine(p2, p6, 0, 1, 0, line10);
-    viewer->addLine(p3, p7, 0, 1, 0, line11);
-    viewer->addLine(p4, p8, 0, 1, 0, line12);
+    this->maindeal->getViewr()->addLine(p1, p5, 0, 1, 0, line9);
+    this->maindeal->getViewr()->addLine(p2, p6, 0, 1, 0, line10);
+    this->maindeal->getViewr()->addLine(p3, p7, 0, 1, 0, line11);
+    this->maindeal->getViewr()->addLine(p4, p8, 0, 1, 0, line12);
 }
 
 
@@ -1022,7 +958,7 @@ void MainWindow::addcuboid(Object obj, int id)
 /*******************************二维绘制图形*************************************************/
 void MainWindow::drawArea()
 {
-    viewer->removeAllShapes();
+    this->maindeal->getViewr()->removeAllShapes();
     if(viewer_Area_id ==0)
     {
         for(int index=0;index<3;index++)
@@ -1032,7 +968,7 @@ void MainWindow::drawArea()
                 char buffer[20];
                 sprintf(buffer,"2Darea_%d_%d",index,i);
                 std::string name =buffer;
-                viewer->addLine<pcl::PointXYZRGB> (paintarea->Area2d_point[index][i],paintarea->Area2d_point[index][i+1],255,0,0,name);
+                this->maindeal->getViewr()->addLine<pcl::PointXYZRGB> (paintarea->Area2d_point[index][i],paintarea->Area2d_point[index][i+1],255,0,0,name);
                 ui->qvtkWidget->update();
             }
         }
@@ -1093,7 +1029,7 @@ void MainWindow::ListtoConvex()
     pcl::PointXYZRGB pt;
     QPointF pf;
     float x, y;
-    viewer->removeAllShapes();
+    this->maindeal->getViewr()->removeAllShapes();
     for(int index=0;index<3;index++)
     {
         paintarea->Area2d_point[index].clear();
@@ -1120,7 +1056,7 @@ void MainWindow::ListtoConvex()
             sprintf(buffer,"2Darea_%d_%d",index,i);
 
             std::string name =buffer;
-            viewer->addLine<pcl::PointXYZRGB> (paintarea->Area2d_point[index][i],paintarea->Area2d_point[index][i+1],r,g,b,name);
+            this->maindeal->getViewr()->addLine<pcl::PointXYZRGB> (paintarea->Area2d_point[index][i],paintarea->Area2d_point[index][i+1],r,g,b,name);
             ui->qvtkWidget->update();
         }
 
@@ -1195,10 +1131,10 @@ void MainWindow::updatePainter2D()
         paintarea->area[index].Area_height_down =setROI->area[index].Area_height_down;
         paintarea->area[index].Area_height_top = setROI->area[index].Area_height_top;
 
-        algonrithm->area[index].Area2D_point_T= setROI->area[index].Area2D_point_T;
-        algonrithm->area[index].Area2D_point= setROI->area[index].Area2D_point;
-        algonrithm->area[index].Area_height_down =setROI->area[index].Area_height_down;
-        algonrithm->area[index].Area_height_top = setROI->area[index].Area_height_top;
+        this->maindeal->getAlgonrithm()->area[index].Area2D_point_T= setROI->area[index].Area2D_point_T;
+        this->maindeal->getAlgonrithm()->area[index].Area2D_point= setROI->area[index].Area2D_point;
+        this->maindeal->getAlgonrithm()->area[index].Area_height_down =setROI->area[index].Area_height_down;
+        this->maindeal->getAlgonrithm()->area[index].Area_height_top = setROI->area[index].Area_height_top;
     }
     fs->SaveDataToFile(this);
     paintarea->update();
@@ -1223,7 +1159,7 @@ void MainWindow::showMovie()
     struPlayInfo.dwLinkMode   = 0;       //0- TCP方式，1- UDP方式，2- 多播方式，3- RTP方式，4-RTP/RTSP，5-RSTP/HTTP
     struPlayInfo.bBlocked     = 0;       //0- 非阻塞取流，1- 阻塞取流
 
-    lRealPlayHandle = NET_DVR_RealPlay_V40(m_ptz->lUserID, &struPlayInfo, NULL, NULL);
+    lRealPlayHandle = NET_DVR_RealPlay_V40(this->maindeal->getPtz()->lUserID, &struPlayInfo, NULL, NULL);
     QString  message1=QString("lrealpal %1").arg(lRealPlayHandle);
     QString  message2=QString("error = %1").arg(NET_DVR_GetLastError());
     ui->textEdit->append(message1);
@@ -1232,7 +1168,7 @@ void MainWindow::showMovie()
 
     if (lRealPlayHandle < 0)
     {
-        NET_DVR_Logout(m_ptz->lUserID);
+        NET_DVR_Logout(this->maindeal->getPtz()->lUserID);
         NET_DVR_Cleanup();
     }
 //    if (!NET_DVR_SaveRealData(lRealPlayHandle, (char *)"./test.mp4")) {
@@ -1253,13 +1189,13 @@ void MainWindow::ReadDevice()
 {
     QSettings config("device.ini",QSettings::IniFormat);
 
-    m_ptz->cam_IP = config.value(QString("camera/IP")).toString();
-    m_ptz->cam_ID = config.value(QString("camera/ID")).toString();
-    m_ptz->cam_Pass = config.value(QString("camera/Pass")).toString();
+    this->maindeal->getPtz()->cam_IP = config.value(QString("camera/IP")).toString();
+    this->maindeal->getPtz()->cam_ID = config.value(QString("camera/ID")).toString();
+    this->maindeal->getPtz()->cam_Pass = config.value(QString("camera/Pass")).toString();
 
 
-    m_ptz->dist = config.value(QString("preset/Dis")).toFloat();
-    m_ptz->ang = config.value(QString("preset/Ang")).toFloat();
+    this->maindeal->getPtz()->dist = config.value(QString("preset/Dis")).toFloat();
+    this->maindeal->getPtz()->ang = config.value(QString("preset/Ang")).toFloat();
     XAngle = config.value(QString("preset/XAngle")).toFloat();
     YAngle = config.value(QString("preset/YAngle")).toFloat();
     Base_X = config.value(QString("preset/Base_X")).toFloat();
@@ -1268,8 +1204,8 @@ void MainWindow::ReadDevice()
     saveDataStatus = config.value(QString("other/SaveDataStatus")).toInt();
     inAalarmLampStatus = config.value(QString("other/InAalarmLampStatus")).toInt();
     outAalarmLampStatus = config.value(QString("other/OutAalarmLampStatus")).toInt();
-    addlidar->data.setDis =  m_ptz->dist;
-    addlidar->data.setAng = m_ptz->ang;
+    addlidar->data.setDis =  this->maindeal->getPtz()->dist;
+    addlidar->data.setAng = this->maindeal->getPtz()->ang;
     addlidar->data.setXAngle = XAngle;
     addlidar->data.setYAngle = YAngle;
     addlidar->data.setBase_X = Base_X;
@@ -1304,9 +1240,9 @@ void MainWindow::WriteDevice(SetData data)
     QSettings config("device.ini",QSettings::IniFormat);
     qDebug("writedevice");
     config.beginGroup(QString("camera"));
-    config.setValue("IP",m_ptz->cam_IP);
-    config.setValue("ID",m_ptz->cam_ID);
-    config.setValue("Pass",m_ptz->cam_Pass);
+    config.setValue("IP",this->maindeal->getPtz()->cam_IP);
+    config.setValue("ID",this->maindeal->getPtz()->cam_ID);
+    config.setValue("Pass",this->maindeal->getPtz()->cam_Pass);
     config.endGroup();
 
     config.beginGroup(QString("preset"));
@@ -1345,15 +1281,15 @@ void MainWindow::WriteDevice(SetData data)
 
 void MainWindow::on_toolButton_7_clicked()
 {
-    if(m_ptz->isRun == true)
+    if(this->maindeal->getPtz()->isRun == true)
     {
         ui->toolButton_7->setStyleSheet("border-image: url(:/images/OFF.png);");
-        m_ptz->isRun = false;
+        this->maindeal->getPtz()->isRun = false;
     }
-    else if(m_ptz->isRun == false)
+    else if(this->maindeal->getPtz()->isRun == false)
     {
         ui->toolButton_7->setStyleSheet("border-image: url(:/images/ON.png);");
-        m_ptz->isRun = true;
+        this->maindeal->getPtz()->isRun = true;
     }
 
 }
@@ -1423,7 +1359,7 @@ void MainWindow::on_toolButton_actionOpengrid_clicked()
     {
         ui->toolButton_actionOpengrid->setStyleSheet("border-image: url(:/images/OFF.png);");
         isShow = false;
-        viewer->removeAllShapes();
+        this->maindeal->getViewr()->removeAllShapes();
 
 
         ui->qvtkWidget->update();
@@ -1434,19 +1370,19 @@ void MainWindow::on_toolButton_actionOpengrid_clicked()
         isShow = true;
         for (int i = -200; i < 210; i = i + 10)
         {
-            viewer->addLine(pcl::PointXYZ(i,0,0), pcl::PointXYZ(i,200,0), 150, 150, 150, "Line_x" + std::to_string(i));
-            viewer->setShapeRenderingProperties(1, 0.2, "Line_x" + std::to_string(i));
+            this->maindeal->getViewr()->addLine(pcl::PointXYZ(i,0,0), pcl::PointXYZ(i,200,0), 150, 150, 150, "Line_x" + std::to_string(i));
+            this->maindeal->getViewr()->setShapeRenderingProperties(1, 0.2, "Line_x" + std::to_string(i));
         }
         for (int i = 0; i < 210; i = i + 10)
         {
-            viewer->addLine(pcl::PointXYZ(-200,i,0), pcl::PointXYZ(200,i,0), 150, 150, 150, "Line_y" + std::to_string(i));
-            viewer->setShapeRenderingProperties(1, 0.2, "Line_y" + std::to_string(i));
+            this->maindeal->getViewr()->addLine(pcl::PointXYZ(-200,i,0), pcl::PointXYZ(200,i,0), 150, 150, 150, "Line_y" + std::to_string(i));
+            this->maindeal->getViewr()->setShapeRenderingProperties(1, 0.2, "Line_y" + std::to_string(i));
         }
 
-        viewer->addLine(pcl::PointXYZ(0,0,0), pcl::PointXYZ(-200,115,0), 150, 150, 150, "Lineleft" );
-        viewer->setShapeRenderingProperties(1, 0.4, "Lineleft");
-        viewer->addLine(pcl::PointXYZ(0,0,0), pcl::PointXYZ(200,115,0), 150, 150, 150, "Lineright" );
-        viewer->setShapeRenderingProperties(1, 0.4, "Lineright");
+        this->maindeal->getViewr()->addLine(pcl::PointXYZ(0,0,0), pcl::PointXYZ(-200,115,0), 150, 150, 150, "Lineleft" );
+        this->maindeal->getViewr()->setShapeRenderingProperties(1, 0.4, "Lineleft");
+        this->maindeal->getViewr()->addLine(pcl::PointXYZ(0,0,0), pcl::PointXYZ(200,115,0), 150, 150, 150, "Lineright" );
+        this->maindeal->getViewr()->setShapeRenderingProperties(1, 0.4, "Lineright");
         ui->qvtkWidget->update();
     }
 }

@@ -35,6 +35,7 @@
 #include "UI/include/smsdialog.h"
 #include <AliSmsAPIClient.h>
 #include "UI/include/aboutdialog.h"
+#include "maindeal.h"
 
 namespace Ui {
 class MainWindow;
@@ -51,6 +52,9 @@ public:
     void ReadDevice();//读取配置文件
     void WriteDevice(SetData data);//
     void ReadConfig();
+
+    void initConnect();
+    void initUi();
 
     //防区
     void drawArea();
@@ -94,6 +98,7 @@ public:
 signals:
     void new_Day();
 private:
+    Maindeal* maindeal;
     Ui::MainWindow *ui;
     FileSystem *fs;
     GetlidarC16 *getC16;
@@ -102,14 +107,14 @@ private:
 
     QList<pcl::PointXYZRGB> Area2D_point[AREAS];
     Algonrithm *algonrithm;
-    LidarClustem *lidarClustem;
+
     LONG lRealPlayHandle;
 
     //创建对象
-    boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr Clu_cloud[255];
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr allcloud;
-    int saveDataFlag;
+//    boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
+//    pcl::PointCloud<pcl::PointXYZRGB>::Ptr Clu_cloud[255];
+//    pcl::PointCloud<pcl::PointXYZRGB>::Ptr allcloud;
+//    int saveDataFlag;
     QButtonGroup *view_Area_group;
     QButtonGroup *view_Cloud_group;
     QButtonGroup *view_Cluster_group;
@@ -129,6 +134,7 @@ private:
     std::chrono::system_clock::time_point end_time;
 
     QTimer *saveMovie_timer;
+    QTimer *timer;
     int saveDataStatus;
     int inAalarmLampStatus;
     int outAalarmLampStatus;
@@ -148,7 +154,6 @@ protected slots:
 
     //
     void CalculateCoordinates(LidarData lidardata);
-    void getCalibAngle();
     void CalculateCoordinatesCH128X1(LidarDataCHXXX lidardata);
     void showData();
     void addLidarSlot(SetData data);

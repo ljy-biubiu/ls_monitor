@@ -15,6 +15,7 @@ RCC_DIR     = temp/rcc
 OBJECTS_DIR = temp/obj
 UI_DIR      = temp/ui
 DESTDIR     = bin
+
 #QMAKE_CC += -g
 #QMAKE_CXX += -g
 #QMAKE_LINK += -g
@@ -36,12 +37,14 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
         filesystem.cpp \
+        maindeal.cpp
 
 HEADERS += \
         mainwindow.h \
         common.h \
         filesystem.h \
         public/Version.h \
+        maindeal.h
 
 
 include("./UI/ui.pri")
