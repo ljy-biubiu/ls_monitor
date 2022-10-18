@@ -1,0 +1,21 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/main.ico</file>
+        <file>images/close_hover.png</file>
+        <file>images/close_normal.png</file>
+        <file>images/max_hover.png</file>
+        <file>images/max_normal.png</file>
+        <file>images/min_hover.png</file>
+        <file>images/min_normal.png</file>
+        <file>images/normal_hover.png</file>
+        <file>images/normal_normal.png</file>
+        <file>images/title.png</file>
+        <file>images/about_normal.png</file>
+        <file>images/setting_normal.png</file>
+        <file>images/setting_pressed.png</file>
+        <file>images/writing_normal.png</file>
+        <file>images/writing_pressed.png</file>
+        <file>images/sms.png</file>
+        <file>images/about_hover.png</file>
+    </qresource>
+</RCC>
