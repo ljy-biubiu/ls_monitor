@@ -3,7 +3,7 @@ SOURCES += \
 
 HEADERS += \
     $$PWD/include/AliSmsAPIClient.h \
-    $$PWD/HCInclude/incEn/DataTyp.h \
+    $$PWD/HCInclude/incEn/DataType.h \
     $$PWD/HCInclude/incEn/DecodeCardSdk.h \
     $$PWD/HCInclude/incEn/HCNetSDK.h \
     $$PWD/HCInclude/incEn/LinuxPlayM4.h \

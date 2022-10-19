@@ -855,13 +855,13 @@ QToolButton:pressed{
   <customwidget>
    <class>ImageWidget</class>
    <extends>QWidget</extends>
-   <header location="global">imagewidget/imageWidget.h</header>
+   <header location="global">imageWidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>MainTitleBar</class>
    <extends>QWidget</extends>
-   <header location="global">titlebar/maintitlebar.h</header>
+   <header location="global">maintitlebar.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

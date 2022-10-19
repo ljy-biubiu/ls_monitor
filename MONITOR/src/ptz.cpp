@@ -37,6 +37,10 @@ void PTZ::PTZ_init()
     camera_pass = ba3.data();
 
 
+    qDebug()<<"cam_IP : "<< cam_IP;
+    qDebug()<<"cam_ID : "<< cam_ID;
+    qDebug()<<"cam_Pass : "<< cam_Pass;
+
     lUserID = NET_DVR_Login_V30(camera_ip, 8000,camera_userid, camera_pass, &struDeviceInfo);
 
     if (lUserID < 0)

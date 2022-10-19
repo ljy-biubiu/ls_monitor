@@ -25,21 +25,19 @@ int lastSize;
 #define DB_INPUT_IMAGE_PATH (128)
 
 
-
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     initUi();
+    ReadDevice();
     maindeal = new Maindeal(addlidar);    //初始化业务句柄
 
     timer = new QTimer(this);
     saveMovie_timer=new QTimer(this);
     sendSmsTimer = new QTimer(this);
 
-    ReadDevice();
     initPointCShow();
     initCameraShow();
     ReadConfig();//读取配置文件参数并更新
@@ -218,6 +216,9 @@ void MainWindow::initConnect()
 
     //防护区域内点云
     connect(this->maindeal->getAlgonrithm(),SIGNAL(sigShow(lidarIntruder)),this,SLOT(showFiltcloud(lidarIntruder)));
+
+    connect(this->maindeal, SIGNAL(send_CH128X1(QVariant)), this, SLOT(get_CH128X1(QVariant)));
+    connect(this->maindeal, SIGNAL(send_lidarC16(pcl::PointCloud<pcl::PointXYZRGB>::Ptr)), this, SLOT(get_lidarC16(pcl::PointCloud<pcl::PointXYZRGB>::Ptr)));
 
 }
 
@@ -498,8 +499,10 @@ void MainWindow::get_lidarC16(pcl::PointCloud<pcl::PointXYZRGB>::Ptr ptr)
 
 }
 
-void MainWindow::get_CH128X1(pcl::PointCloud<pcl::PointXYZRGB>::Ptr ptr)
+void MainWindow::get_CH128X1(QVariant Ptr)
 {
+
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr ptr = Ptr.value<pcl::PointCloud<pcl::PointXYZRGB>::Ptr>();
     this->maindeal->getAlgonrithm()->tCloud->clear();
     *this->maindeal->getAlgonrithm()->tCloud += *ptr;
     this->maindeal->getAlgonrithm()->start();
@@ -521,7 +524,6 @@ void MainWindow::get_CH128X1(pcl::PointCloud<pcl::PointXYZRGB>::Ptr ptr)
         this->maindeal->getViewr()->addPointCloud(ptr,name);
         this->maindeal->getViewr()->updatePointCloud(ptr,name);
     }
-
     ui->qvtkWidget->update();
 }
 
@@ -976,13 +978,6 @@ void MainWindow::ReadDevice()
 {
     QSettings config("device.ini",QSettings::IniFormat);
 
-    this->maindeal->getPtz()->cam_IP = config.value(QString("camera/IP")).toString();
-    this->maindeal->getPtz()->cam_ID = config.value(QString("camera/ID")).toString();
-    this->maindeal->getPtz()->cam_Pass = config.value(QString("camera/Pass")).toString();
-
-
-    this->maindeal->getPtz()->dist = config.value(QString("preset/Dis")).toFloat();
-    this->maindeal->getPtz()->ang = config.value(QString("preset/Ang")).toFloat();
     XAngle = config.value(QString("preset/XAngle")).toFloat();
     YAngle = config.value(QString("preset/YAngle")).toFloat();
     Base_X = config.value(QString("preset/Base_X")).toFloat();
@@ -1015,7 +1010,6 @@ void MainWindow::ReadDevice()
     addlidar->data.up_z = config.value(QStringLiteral("Lidar/Up_Z")).toFloat();
     addlidar->data.ledIp = config.value(QStringLiteral("Lidar/LedIP")).toString().toStdString();
     addlidar->data.lidarPort = config.value(QStringLiteral("Lidar/LidarPort")).toInt();
-
 
     addlidar->ShowData();
 

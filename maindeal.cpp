@@ -3,11 +3,27 @@
 Maindeal::Maindeal( AddLidar* addidar ,QObject* parent ) : QObject( parent ),addidar_( addidar ) {
 
     getCalibAngle();
-
     initParam();
     initObject();
+    ReadDevice();
     initAlarmLed();
     initLidarType();
+
+}
+
+void Maindeal::ReadDevice()
+{
+    QSettings config("device.ini",QSettings::IniFormat);
+
+    this->getPtz()->cam_IP = config.value(QString("camera/IP")).toString();
+    this->getPtz()->cam_ID = config.value(QString("camera/ID")).toString();
+    this->getPtz()->cam_Pass = config.value(QString("camera/Pass")).toString();
+
+    //    qDebug()<<"cam_IP"<<config.value(QStringLiteral("camera/IP")).toFloat();
+    //    qDebug()<<"data.pos_x"<<config.value(QStringLiteral("Lidar/Pos_X")).toFloat();
+
+    this->getPtz()->dist = config.value(QString("preset/Dis")).toFloat();
+    this->getPtz()->ang = config.value(QString("preset/Ang")).toFloat();
 
 }
 
@@ -51,13 +67,17 @@ void Maindeal::initAlarmLed()
 
 void Maindeal::initLidarType()
 {
+    qDebug()<<"CH128X1:"<<addidar_->data.lidarModel;
+    qDebug()<<"CH128X1:"<<addidar_->data.lidarModel;
+    qDebug()<<"CH128X1:"<<addidar_->data.lidarModel;
+
     if("CH128X1" == addidar_->data.lidarModel)
     {
         qRegisterMetaType<struct LidarDataCHXXX>("struct LidarDataCHXXX");
         qRegisterMetaType<pcl::PointCloud<pcl::PointXYZRGB>::Ptr>("pcl::PointCloud<pcl::PointXYZRGB>::Ptr");
         getCH128X1 = new GetlidarCH128X1(addidar_->data.lidarPort);
         connect(getCH128X1, SIGNAL(SendData(struct LidarDataCHXXX)), this, SLOT(CalculateCoordinatesCH128X1(struct LidarDataCHXXX)));
-        connect(this, SIGNAL(send_CH128X1(pcl::PointCloud<pcl::PointXYZRGB>::Ptr)), this, SLOT(get_CH128X1(pcl::PointCloud<pcl::PointXYZRGB>::Ptr)));
+        //        connect(this, SIGNAL(send_CH128X1(QVariant)), this, SLOT(get_CH128X1(QVariant)));
         getCH128X1->start();
     }
     else if("C16" == addidar_->data.lidarModel)
@@ -65,11 +85,26 @@ void Maindeal::initLidarType()
         qRegisterMetaType<struct LidarData>("struct LidarData");
         qRegisterMetaType<pcl::PointCloud<pcl::PointXYZRGB>::Ptr>("pcl::PointCloud<pcl::PointXYZRGB>::Ptr");
         getC16 = new GetlidarC16(addidar_->data.lidarPort);
-        connect(getC16, SIGNAL(send_CH128X1(struct LidarData)), this, SLOT(CalculateCoordinates(struct LidarData)));
-        connect(this, SIGNAL(send_lidarC16(pcl::PointCloud<pcl::PointXYZRGB>::Ptr)), this, SLOT(get_lidarC16(pcl::PointCloud<pcl::PointXYZRGB>::Ptr)));
+        connect(getC16, SIGNAL(SendData(struct LidarData)), this, SLOT(CalculateCoordinates(struct LidarData)));
+        //        connect(this, SIGNAL(send_lidarC16(pcl::PointCloud<pcl::PointXYZRGB>::Ptr)), this, SLOT(get_lidarC16(pcl::PointCloud<pcl::PointXYZRGB>::Ptr)));
         getC16->start();
     }
 }
+
+//if("CH128X1" == addlidar->data.lidarModel)
+//{
+//    qRegisterMetaType<struct LidarDataCHXXX>("struct LidarDataCHXXX");
+//    getCH128X1 = new GetlidarCH128X1(addlidar->data.lidarPort);
+//    connect(getCH128X1, SIGNAL(SendData(struct LidarDataCHXXX)), this, SLOT(CalculateCoordinatesCH128X1(struct LidarDataCHXXX)));
+//    getCH128X1->start();
+//}
+//else if("C16" == addlidar->data.lidarModel)
+//{
+//    qRegisterMetaType<struct LidarData>("struct LidarData");
+//    getC16 = new GetlidarC16(addlidar->data.lidarPort);
+//    connect(getC16, SIGNAL(SendData(struct LidarData)), this, SLOT(CalculateCoordinates(struct LidarData)));
+//    getC16->start();
+//}
 
 //计算最大最小
 void Maindeal::search_max_min(QList<pcl::PointXYZRGB> box)
@@ -197,6 +232,9 @@ void Maindeal::CalculateCoordinates(LidarData lidardata)
     }
 
     emit send_lidarC16(tCloud);
+
+
+    /////////////
 }
 
 void Maindeal::CalculateCoordinatesCH128X1(LidarDataCHXXX lidardata)
@@ -277,8 +315,12 @@ void Maindeal::CalculateCoordinatesCH128X1(LidarDataCHXXX lidardata)
         }
     }
 
-    emit send_CH128X1(tCloud);
+    qRegisterMetaType<QVariant>("QVariant");
+    QVariant var = QVariant::fromValue((pcl::PointCloud<pcl::PointXYZRGB>::Ptr)tCloud);
+    //var.setValue(tCloud);
 
+    //    qDebug()<<"===================================1111111";
+    emit send_CH128X1(var);
 }
 
 Maindeal::~Maindeal() {

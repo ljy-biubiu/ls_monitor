@@ -169,7 +169,7 @@ protected slots:
     void showAbout();
 
     //
-    void get_CH128X1(pcl::PointCloud<pcl::PointXYZRGB>::Ptr ptr);
+    void get_CH128X1(QVariant ptr);
     void get_lidarC16(pcl::PointCloud<pcl::PointXYZRGB>::Ptr ptr);
 
 

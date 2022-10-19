@@ -674,7 +674,7 @@
   <customwidget>
    <class>ChildTitleBar</class>
    <extends>QWidget</extends>
-   <header location="global">titlebar/childtitlebar.h</header>
+   <header location="global">childtitlebar.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

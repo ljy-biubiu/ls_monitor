@@ -4,6 +4,7 @@
 
 #include <QDebug>
 #include <QObject>
+#include <QSettings>
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -51,6 +52,7 @@ public:
     void initAlarmLed();
     void initObject();
     void initParam();
+    void ReadDevice();
 
     static void search_max_min(QList<pcl::PointXYZRGB> box);
     static void quickSort(float s[], int l, int r);
@@ -101,7 +103,7 @@ private:
 
 
 signals:
-    void send_CH128X1(pcl::PointCloud<pcl::PointXYZRGB>::Ptr prt);
+    void send_CH128X1(QVariant);
     void send_lidarC16(pcl::PointCloud<pcl::PointXYZRGB>::Ptr prt);
 
 public slots:
