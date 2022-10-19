@@ -36,27 +36,27 @@ QMAKE_LFLAGS += "-Wl,-rpath,\'\$$ORIGIN/SDK/HCNetSDKCom\'"
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-        filesystem.cpp \
         maindeal.cpp
 
 HEADERS += \
         mainwindow.h \
         common.h \
-        filesystem.h \
         public/Version.h \
         maindeal.h
 
 
 include("./UI/ui.pri")
-include("./LED/led.pri")
+include("./ALARMLED/alarmled.pri")
 include("./SDK/sdk.pri")
 include("./MONITOR/monitor.pri")
+include("./GENERALTOOL/generaltool.pri")
 
 DISTFILES += \
     UI/ui.pri \
-    LED/led.pri \
+    ALARMLED/alarmled.pri \
     SDK/sdk.pri \
-    MONITOR/monitor.pri
+    MONITOR/monitor.pri \
+    GENERALTOOL/generaltool.pri
 
 FORMS += \
      mainwindow.ui

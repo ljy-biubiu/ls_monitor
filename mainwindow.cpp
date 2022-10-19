@@ -25,47 +25,27 @@ int lastSize;
 #define DB_INPUT_IMAGE_PATH (128)
 
 
+
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     initUi();
-
-    fs =new FileSystem();
-    Ali = new AliSmsAPIClient();
-    maindeal = new Maindeal(addlidar);
+    maindeal = new Maindeal(addlidar);    //初始化业务句柄
 
     timer = new QTimer(this);
     saveMovie_timer=new QTimer(this);
     sendSmsTimer = new QTimer(this);
 
-    Creat_DataFileDir();// 启动先创建文件夹
     ReadDevice();
-
-
-    qRegisterMetaType<Object>("Object");
-    qRegisterMetaType<QString>("QString");
-    //////////////////////////////////////////////////
-
-
-    flagAllCloud = true;
-    flagPartCloud = false;
-
-    ClustemSwitch = true;//三维聚类开关
-    viewer_Cloud_id = 0;
-    alarm_flag = 0;
-    cruise_flag = 0;
-    isShow = true;
-    isTrick = false;
-    isSendSms = true;
-    sendSmsStatus = false;
-
     initPointCShow();
     initCameraShow();
     ReadConfig();//读取配置文件参数并更新
     initControlPanel();
     initConnect();
+    Creat_DataFileDir();// 启动先创建文件夹
 
     timer->start(10);
     this->showMaximized();
@@ -79,6 +59,15 @@ MainWindow::~MainWindow()
         saveMovie_timer->stop();
     }
     delete ui;
+}
+
+void MainWindow::initParam()
+{
+    flagAllCloud = true;
+    flagPartCloud = false;
+
+    isShow = true;
+    isTrick = false;
 }
 
 void MainWindow::initPointCShow()
@@ -95,8 +84,8 @@ void MainWindow::initCameraShow()
     //摄像头
 
     this->maindeal->getViewr()->setCameraPosition(addlidar->data.pos_x, addlidar->data.pos_y, addlidar->data.pos_z,\
-                              addlidar->data.view_x,addlidar->data.view_y,addlidar->data.view_z,\
-                              addlidar->data.up_x, addlidar->data.up_y, addlidar->data.up_z);
+                                                  addlidar->data.view_x,addlidar->data.view_y,addlidar->data.view_z,\
+                                                  addlidar->data.up_x, addlidar->data.up_y, addlidar->data.up_z);
 
     this->maindeal->getLidarClustem()->setClusterTolerance(addlidar->data.clusterTolerance);
     this->maindeal->getLidarClustem()->setMaxClusterSize(addlidar->data.maxClusterSize);
@@ -217,6 +206,9 @@ void MainWindow::initConnect()
     connect(setROI,SIGNAL(sigChangeArea_index(int)),paintarea,SLOT(UpdateArea_index(int)));
     connect(setROI,SIGNAL(sigaltablepaint()),this,SLOT(updatePainter2D()));
 
+    qRegisterMetaType<Object>("Object");
+    qRegisterMetaType<QString>("QString");
+
     connect(this->maindeal->getLidarClustem(), SIGNAL(SendClus_Object(QVariant)), this, SLOT(showClustem_Obj(QVariant)));
     connect(addlidar,SIGNAL(SendSet(SetData)),this,SLOT(addLidarSlot(SetData)));
     /********************************************************************************************************************/
@@ -297,10 +289,10 @@ void MainWindow::onTimeout()
     {
         QString filePathName = QString::fromStdString(m_movieFilePath) + strTime + ".mp4";
         saveFlag = 0;
-     //   ui->textEdit->append(filePathName);
+        //   ui->textEdit->append(filePathName);
         if (!NET_DVR_SaveRealData(lRealPlayHandle, filePathName.toLatin1().data()))
         {
-//            printf("保存到文件失败 错误码:, %d\n", NET_DVR_GetLastError());
+            //            printf("保存到文件失败 错误码:, %d\n", NET_DVR_GetLastError());
             ui->textEdit->append(QString("保存到文件失败 错误码:, %1").arg(NET_DVR_GetLastError()));
         }
     }
@@ -330,7 +322,7 @@ void MainWindow::do_sendSms()
 //读取配置文件
 void MainWindow::ReadConfig()
 {
-    fs->LoadFile(this);
+    this->maindeal->getFs()->LoadFile(this);
     updatePainter2D();
     showData();
 }
@@ -354,21 +346,21 @@ void MainWindow::slot_view_Cluster_group(int id)
 {
     if(id == 0)
     {
-        alarm_flag = 0;
-        cruise_flag = 0;
-        ClustemSwitch = true;
+        this->maindeal->alarm_flag = 0;
+        this->maindeal->cruise_flag = 0;
+        this->maindeal->ClustemSwitch = true;
     }
     else if(id == 1)
     {
         this->maindeal->getViewr()->removeAllShapes();
         ui->qvtkWidget->update();
-        ClustemSwitch = false;
+        this->maindeal->ClustemSwitch = false;
         LEDContrlAPI(0);
         LEDContrlAPI_IP(addlidar->data.ledIp.c_str(),0);
-        if(cruise_flag == 0)
+        if(this->maindeal->cruise_flag == 0)
         {
             this->maindeal->getPtz()->PTZ_Cruise_Open();
-            cruise_flag = 1;
+            this->maindeal->cruise_flag = 1;
         }
 
         this->maindeal->getViewr()->removeAllShapes();
@@ -379,7 +371,7 @@ void MainWindow::slot_view_Area_group(int id)
 {
     viewer_Area_id =id;
     drawArea();
-    fs->SaveDataToFile(this);
+    this->maindeal->getFs()->SaveDataToFile(this);
 }
 
 //点云显示模式
@@ -396,7 +388,7 @@ void MainWindow::slot_view_Cloud_group(int id)
         flagPartCloud = true;
     }
 
-    viewer_Cloud_id =id;
+    this->maindeal->viewer_Cloud_id =id;
     drawArea();
 }
 
@@ -434,7 +426,7 @@ void MainWindow::showFiltcloud(lidarIntruder intruder)
     *paintarea->xCloud += *intruder.tCloud;
     paintarea->update();
 
-    if(viewer_Cloud_id ==1)
+    if(this->maindeal->viewer_Cloud_id ==1)
     {
         std::string name ="All_cloud";
         this->maindeal->getViewr()->removePointCloud(name);
@@ -446,7 +438,7 @@ void MainWindow::showFiltcloud(lidarIntruder intruder)
     if(tCloud->size()>0)
     {
         this->maindeal->getLidarClustem()->lidar_points->clear();
-        if (ClustemSwitch == true)
+        if (this->maindeal->ClustemSwitch == true)
         {
             for (int i = 0; i < tCloud->size(); i++)
             {
@@ -463,20 +455,20 @@ void MainWindow::showFiltcloud(lidarIntruder intruder)
                 this->maindeal->getLidarClustem()->start();
                 this->maindeal->getLidarClustem()->wait();
             }
-            cruise_flag = 0;
+            this->maindeal->cruise_flag = 0;
             start_time = std::chrono::system_clock::now();
         }
-    }else if (cruise_flag == 0)
+    }else if (this->maindeal->cruise_flag == 0)
     {
 
         end_time = std::chrono::system_clock::now();
         auto count_time = std::chrono::duration_cast<std::chrono::milliseconds> (end_time - start_time ).count();
-//        std::cout << "cruise_flag ==  " << cruise_flag << std::endl;
+        //        std::cout << "this->maindeal->cruise_flag ==  " << this->maindeal->cruise_flag << std::endl;
         if (count_time > 60000)
         {
             this->maindeal->getPtz()->PTZ_Cruise_Open();
-            cruise_flag = 1;
-//            std::cout << "888882222count time milliseconds: " << count_time << std::endl;
+            this->maindeal->cruise_flag = 1;
+            //            std::cout << "888882222count time milliseconds: " << count_time << std::endl;
         }
     }
 
@@ -495,7 +487,7 @@ void MainWindow::get_lidarC16(pcl::PointCloud<pcl::PointXYZRGB>::Ptr ptr)
     paintarea->update();
 
 
-    if(viewer_Cloud_id ==0)
+    if(this->maindeal->viewer_Cloud_id ==0)
     {
         std::string name ="All_cloud";
         this->maindeal->getViewr()->removePointCloud(name);
@@ -522,7 +514,7 @@ void MainWindow::get_CH128X1(pcl::PointCloud<pcl::PointXYZRGB>::Ptr ptr)
         *this->maindeal->getAllCloud() = *ptr;
     }
 
-    if(viewer_Cloud_id ==0)
+    if(this->maindeal->viewer_Cloud_id ==0)
     {
         std::string name ="All_cloud";
         this->maindeal->getViewr()->removePointCloud(name);
@@ -564,7 +556,7 @@ void MainWindow::showClustem_Obj(QVariant DataVar)
                 this->maindeal->saveDataFlag = 1;
             }
         }
-        if(true == isSendSms)
+        if(true == this->maindeal->isSendSms)
         {
             if(!sendSmsTimer->isActive())
             {
@@ -578,23 +570,22 @@ void MainWindow::showClustem_Obj(QVariant DataVar)
                     {
                         int time = smsDialog->getSmsTimeInterval();
                         sendSmsTimer->start(60*1000*time);
-                        sendSmsStatus = true;
+                        this->maindeal->sendSmsStatus = true;
                     }
-
                 }
 
             }
-            if(true == sendSmsStatus)
+            if(true == this->maindeal->sendSmsStatus)
             {
-                sendSmsStatus = false;
+                this->maindeal->sendSmsStatus = false;
                 std::vector<std::string> numberList = smsDialog->getSmsNumbers();
                 if(1 == numberList.size())
                 {
-                    Ali->SendSMS(numberList[0],"1号港");
+                    this->maindeal->getAliSms()->SendSMS(numberList[0],"1号港");
                 }
                 else
                 {
-                    Ali->SendSMSList(numberList,"1号港");
+                    this->maindeal->getAliSms()->SendSMSList(numberList,"1号港");
                 }
             }
         }
@@ -603,31 +594,31 @@ void MainWindow::showClustem_Obj(QVariant DataVar)
     if(Cl_obj.Obj->size() == 0)
     {
         std::cout << "========ALARM OFF ============" << std::endl;
-        alarm_flag = 0;
-        LEDContrlAPI(alarm_flag);
-        LEDContrlAPI_IP(addlidar->data.ledIp.c_str(),alarm_flag);
+        this->maindeal->alarm_flag = 0;
+        LEDContrlAPI(this->maindeal->alarm_flag);
+        LEDContrlAPI_IP(addlidar->data.ledIp.c_str(),this->maindeal->alarm_flag);
         for(int i =0; i < 255; i++)
         {
             this->maindeal->getCluCloud()[i]->clear();
         }
     }
-    else if(alarm_flag == 0)
+    else if(this->maindeal->alarm_flag == 0)
     {
-        alarm_flag = 1;
+        this->maindeal->alarm_flag = 1;
         if(1 == inAalarmLampStatus)
         {
-            LEDContrlAPI(alarm_flag);
+            LEDContrlAPI(this->maindeal->alarm_flag);
         }
 
         if(1 == outAalarmLampStatus)
         {
-            LEDContrlAPI_IP(addlidar->data.ledIp.c_str(),alarm_flag);
+            LEDContrlAPI_IP(addlidar->data.ledIp.c_str(),this->maindeal->alarm_flag);
         }
         std::cout << "========ALARM ON **************" << std::endl;
     }
     if(0 == inAalarmLampStatus||0 == outAalarmLampStatus)
     {
-        alarm_flag = 0;
+        this->maindeal->alarm_flag = 0;
     }
 
     for(int i =0; i < 255; i++)
@@ -855,7 +846,7 @@ void MainWindow::showData()
     }
 
     setROI->showPoint();
-    fs->SaveDataToFile(this);
+    this->maindeal->getFs()->SaveDataToFile(this);
 }
 
 void MainWindow::ListtoConvex()
@@ -932,7 +923,7 @@ void MainWindow::updatePainter2D()
         this->maindeal->getAlgonrithm()->area[index].Area_height_down =setROI->area[index].Area_height_down;
         this->maindeal->getAlgonrithm()->area[index].Area_height_top = setROI->area[index].Area_height_top;
     }
-    fs->SaveDataToFile(this);
+    this->maindeal->getFs()->SaveDataToFile(this);
     paintarea->update();
 }
 
@@ -967,12 +958,12 @@ void MainWindow::showMovie()
         NET_DVR_Logout(this->maindeal->getPtz()->lUserID);
         NET_DVR_Cleanup();
     }
-//    if (!NET_DVR_SaveRealData(lRealPlayHandle, (char *)"./test.mp4")) {
-//           printf("保存到文件失败 错误码:, %d\n", NET_DVR_GetLastError());
-//       }
-//       printf("保存到文件test.mp4\n");
-//    sleep(5); // 取流时间长度 秒
-//    NET_DVR_StopRealPlay(lRealPlayHandle); // 停止取流
+    //    if (!NET_DVR_SaveRealData(lRealPlayHandle, (char *)"./test.mp4")) {
+    //           printf("保存到文件失败 错误码:, %d\n", NET_DVR_GetLastError());
+    //       }
+    //       printf("保存到文件test.mp4\n");
+    //    sleep(5); // 取流时间长度 秒
+    //    NET_DVR_StopRealPlay(lRealPlayHandle); // 停止取流
 
 }
 
@@ -1204,15 +1195,15 @@ void MainWindow::on_pushButton_sms_clicked()
 
 void MainWindow::on_toolButton_sms_clicked()
 {
-    if(isSendSms == true)
+    if(this->maindeal->isSendSms == true)
     {
         ui->toolButton_sms->setStyleSheet("border-image: url(:/images/OFF.png);");
-        isSendSms = false;
+        this->maindeal->isSendSms = false;
     }
-    else if(isSendSms == false)
+    else if(this->maindeal->isSendSms == false)
     {
         ui->toolButton_sms->setStyleSheet("border-image: url(:/images/ON.png);");
-        isSendSms = true;
+        this->maindeal->isSendSms = true;
     }
 }
 

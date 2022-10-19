@@ -4,7 +4,28 @@ Maindeal::Maindeal( AddLidar* addidar ,QObject* parent ) : QObject( parent ),add
 
     getCalibAngle();
 
-    viewer.reset (new pcl::visualization::PCLVisualizer ("viewer", false));
+    initParam();
+    initObject();
+    initAlarmLed();
+    initLidarType();
+
+}
+
+void Maindeal::initParam()
+{
+    saveDataFlag = 0;
+    viewer_Cloud_id = 0;
+    alarm_flag = 0;
+    cruise_flag = 0;
+    isSendSms = true;
+    sendSmsStatus = false;
+    ClustemSwitch = true;//三维聚类开关
+}
+
+void Maindeal::initObject()
+{
+    fs =new FileSystem();
+    Ali = new AliSmsAPIClient();
 
     //行人轨迹
     for(int i = 0;i < 255;i++)
@@ -12,24 +33,24 @@ Maindeal::Maindeal( AddLidar* addidar ,QObject* parent ) : QObject( parent ),add
         Clu_cloud[i].reset(new pcl::PointCloud<pcl::PointXYZRGB>);
     }
     allcloud.reset(new pcl::PointCloud<pcl::PointXYZRGB>);
-    saveDataFlag = 0;
-
+    viewer.reset (new pcl::visualization::PCLVisualizer ("viewer", false));
     lidarClustem = new LidarClustem;
-
     algonrithm =new Algonrithm(addidar_->data.resolution,addidar_->data.difference_threshold);
+    m_ptz = new PTZ();
+}
 
+void Maindeal::initAlarmLed()
+{
     // TODO:WUZHENFENG 20220407
     // 添加报警器服务端线程
     std::thread alarm_light_thread(StartAlarmLight);
     alarm_light_thread.detach();
     std::thread alarmIP_light_thread(StartAlarmLight_IP);
     alarmIP_light_thread.detach();
+}
 
-    m_ptz = new PTZ();
-
-
-
-
+void Maindeal::initLidarType()
+{
     if("CH128X1" == addidar_->data.lidarModel)
     {
         qRegisterMetaType<struct LidarDataCHXXX>("struct LidarDataCHXXX");
@@ -49,8 +70,6 @@ Maindeal::Maindeal( AddLidar* addidar ,QObject* parent ) : QObject( parent ),add
         getC16->start();
     }
 }
-
-
 
 //计算最大最小
 void Maindeal::search_max_min(QList<pcl::PointXYZRGB> box)
@@ -265,10 +284,21 @@ void Maindeal::CalculateCoordinatesCH128X1(LidarDataCHXXX lidardata)
 Maindeal::~Maindeal() {
 }
 
+FileSystem* Maindeal::getFs()
+{
+    return fs;
+}
+
+AliSmsAPIClient* Maindeal::getAliSms()
+{
+    return Ali;
+}
+
 PTZ* Maindeal::getPtz()
 {
     return m_ptz;
 }
+
 
 Algonrithm* Maindeal::getAlgonrithm()
 {

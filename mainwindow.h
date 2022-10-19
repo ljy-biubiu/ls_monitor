@@ -33,7 +33,7 @@
 #include <iostream>
 #include <chrono>
 #include "UI/include/smsdialog.h"
-#include <AliSmsAPIClient.h>
+//#include <AliSmsAPIClient.h>
 #include "UI/include/aboutdialog.h"
 #include "maindeal.h"
 
@@ -55,6 +55,7 @@ public:
 
     void initConnect();
     void initUi();
+    void initParam();
     void initControlPanel();
     void initCameraShow();
     void initPointCShow();
@@ -103,13 +104,13 @@ signals:
 private:
     Maindeal* maindeal;
     Ui::MainWindow *ui;
-    FileSystem *fs;
+//    FileSystem *fs;
 //    GetlidarC16 *getC16;
 //    GetlidarCH128X1 *getCH128X1;
     PaintArea *paintarea;
 
     QList<pcl::PointXYZRGB> Area2D_point[AREAS];
-    Algonrithm *algonrithm;
+//    Algonrithm *algonrithm;
 
     LONG lRealPlayHandle;
 
@@ -126,12 +127,12 @@ private:
 
     int viewer_Area_id;
     int viewer_Cloud_id;
-    bool ClustemSwitch;
+//    bool ClustemSwitch;
     bool isShow;
     bool isTrick;
-    bool isSendSms;     // 短信开关
-    int alarm_flag = 0; // 报警开关
-    int cruise_flag = 1;// 巡航开关
+//    bool isSendSms;     // 短信开关
+////    int alarm_flag = 0; // 报警开关
+////    int cruise_flag = 1;// 巡航开关
 
     std::chrono::system_clock::time_point start_time;
     std::chrono::system_clock::time_point end_time;
@@ -148,7 +149,7 @@ private:
     std::string m_cloudFilePath;
     QString todayDate;
     SMSDialog *smsDialog;
-    AliSmsAPIClient *Ali;
+//    AliSmsAPIClient *Ali;
     aboutDialog *paboutDialog;
 protected slots:
     void slot_view_Area_group(int id);

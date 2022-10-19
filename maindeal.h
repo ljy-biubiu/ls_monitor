@@ -26,6 +26,7 @@
 #include <ptz.h>
 #include <getlidarc16.h>
 #include "getlidarch128x1.h"
+#include <AliSmsAPIClient.h>
 
 #include <pcl/io/ifs_io.h>
 #include <pcl/io/pcd_io.h>
@@ -46,16 +47,32 @@ public:
     ~Maindeal();
 
     void getCalibAngle();
+    void initLidarType();
+    void initAlarmLed();
+    void initObject();
+    void initParam();
+
+    static void search_max_min(QList<pcl::PointXYZRGB> box);
+    static void quickSort(float s[], int l, int r);
+
     boost::shared_ptr<pcl::visualization::PCLVisualizer> getViewr();
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr * getCluCloud();
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr  getAllCloud();
     LidarClustem* getLidarClustem();
     Algonrithm* getAlgonrithm();
     PTZ* getPtz();
+    FileSystem* getFs();
+    AliSmsAPIClient* getAliSms();
 
+    int alarm_flag;
+    int cruise_flag;
     int saveDataFlag;
-    static void search_max_min(QList<pcl::PointXYZRGB> box);
-    static void quickSort(float s[], int l, int r);
+    int viewer_Cloud_id;
+
+    bool ClustemSwitch;
+    bool isSendSms;
+    bool sendSmsStatus;
+
 
 private:
     boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
@@ -67,6 +84,9 @@ private:
     AddLidar *addidar_;
     PTZ *m_ptz;
 
+    FileSystem *fs;
+    AliSmsAPIClient *Ali;
+
     GetlidarC16 *getC16;
     GetlidarCH128X1 *getCH128X1;
 
@@ -77,7 +97,7 @@ private:
     float Base_Y = 0;
 
     double BigAngle[32] = {-17, -16, -15, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4.125, -4, -3.125,
-                            -3, -2.125, -2, -1.125, -1, -0.125, 0, 0.875, 1, 1.875, 2, 3, 4, 5, 6, 7};
+                           -3, -2.125, -2, -1.125, -1, -0.125, 0, 0.875, 1, 1.875, 2, 3, 4, 5, 6, 7};
 
 
 signals:
