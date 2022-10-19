@@ -26,6 +26,240 @@ Maindeal::Maindeal( AddLidar* addidar ,QObject* parent ) : QObject( parent ),add
     alarmIP_light_thread.detach();
 
     m_ptz = new PTZ();
+
+
+
+
+    if("CH128X1" == addidar_->data.lidarModel)
+    {
+        qRegisterMetaType<struct LidarDataCHXXX>("struct LidarDataCHXXX");
+        qRegisterMetaType<pcl::PointCloud<pcl::PointXYZRGB>::Ptr>("pcl::PointCloud<pcl::PointXYZRGB>::Ptr");
+        getCH128X1 = new GetlidarCH128X1(addidar_->data.lidarPort);
+        connect(getCH128X1, SIGNAL(SendData(struct LidarDataCHXXX)), this, SLOT(CalculateCoordinatesCH128X1(struct LidarDataCHXXX)));
+        connect(this, SIGNAL(send_CH128X1(pcl::PointCloud<pcl::PointXYZRGB>::Ptr)), this, SLOT(get_CH128X1(pcl::PointCloud<pcl::PointXYZRGB>::Ptr)));
+        getCH128X1->start();
+    }
+    else if("C16" == addidar_->data.lidarModel)
+    {
+        qRegisterMetaType<struct LidarData>("struct LidarData");
+        qRegisterMetaType<pcl::PointCloud<pcl::PointXYZRGB>::Ptr>("pcl::PointCloud<pcl::PointXYZRGB>::Ptr");
+        getC16 = new GetlidarC16(addidar_->data.lidarPort);
+        connect(getC16, SIGNAL(send_CH128X1(struct LidarData)), this, SLOT(CalculateCoordinates(struct LidarData)));
+        connect(this, SIGNAL(send_lidarC16(pcl::PointCloud<pcl::PointXYZRGB>::Ptr)), this, SLOT(get_lidarC16(pcl::PointCloud<pcl::PointXYZRGB>::Ptr)));
+        getC16->start();
+    }
+}
+
+
+
+//计算最大最小
+void Maindeal::search_max_min(QList<pcl::PointXYZRGB> box)
+{
+    if (box.size()>0)
+    {
+        float point_x[50] = { 0 };
+        float point_y[50] = { 0 };
+
+        for (unsigned int i = 0; i < box.size(); i++)
+        {
+            point_x[i] = box[i].x * 1000;
+            point_y[i] = box[i].y * 1000;
+        }
+        quickSort(point_x, 0, box.size() - 1);
+        quickSort(point_y, 0, box.size() - 1);
+    }
+}
+
+
+void Maindeal::quickSort(float s[], int l, int r)
+{
+    if (l< r)
+    {
+        int i = l, j = r, x = s[l];
+        while (i < j)
+        {
+            while (i < j && s[j] >= x) // 从右向左找第一个小于x的数
+                j--;
+            if (i < j)
+                s[i++] = s[j];
+            while (i < j && s[i]< x) // 从左向右找第一个大于等于x的数
+                i++;
+            if (i < j)
+                s[j--] = s[i];
+        }
+        s[i] = x;
+        quickSort(s, l, i - 1); // 递归调用
+        quickSort(s, i + 1, r);
+    }
+}
+
+
+///*********************点云显示**********************************/
+////添加雷达安装角度与高度调整
+
+void Maindeal::CalculateCoordinates(LidarData lidardata)
+{
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr tCloud(new pcl::PointCloud<pcl::PointXYZRGB>);
+
+    double cosTheta[16] = { 0 };
+    double sinTheta[16] = { 0 };
+    for (int i = 0; i < 16; i++)
+    {
+        int theta = i;
+        if (i % 2 == 0)
+            theta = i - 15;
+        cosTheta[i] = cos(theta * PI / 180);
+        sinTheta[i] = sin(theta * PI / 180);
+    }
+    double sinAngle[5000] = { 0 };
+    double cosAngle[5000] = { 0 };
+    if (lidardata.angle.size()>5000) lidardata.angle.clear();
+    for (int i = 0; i < (int)lidardata.angle.size(); i++)
+    {
+        sinAngle[i] = sin(lidardata.angle[i] * PI / 180);
+        cosAngle[i] = cos(lidardata.angle[i] * PI / 180);
+    }
+
+    tCloud->width = lidardata.angle.size() * 16;
+    tCloud->height = 1;
+    tCloud->is_dense = false;
+    tCloud->points.resize(tCloud->width * tCloud->height);
+
+    for (int i = 0; i < 16; i++)
+    {
+
+        for (int j = 0; j < (int)lidardata.angle.size(); j++)
+        {
+            if (lidardata.distance[i][j] > 0)//滤除距离为0
+            {
+                tCloud->points[i*lidardata.angle.size() + j].x = (lidardata.distance[i][j] * cosTheta[i] * sinAngle[j]) / 100.f;
+                tCloud->points[i*lidardata.angle.size() + j].y = (lidardata.distance[i][j] * cosTheta[i] * cosAngle[j]) / 100.f;
+                tCloud->points[i*lidardata.angle.size() + j].z = (lidardata.distance[i][j] * sinTheta[i]) / 100.f;
+
+                //坐标轴方向转换
+                tCloud->points[i*lidardata.angle.size() + j].x = tCloud->points[i*lidardata.angle.size() + j].x * (cos(XAngle * PI / 180) + sin(YAngle * PI / 180));
+                tCloud->points[i*lidardata.angle.size() + j].y = tCloud->points[i*lidardata.angle.size() + j].y * (cos(YAngle * PI / 180) + sin(XAngle * PI / 180));
+                tCloud->points[i*lidardata.angle.size() + j].z = tCloud->points[i*lidardata.angle.size() + j].z;
+                //点转换
+                tCloud->points[i*lidardata.angle.size() + j].x = tCloud->points[i*lidardata.angle.size() + j].x + Base_X;
+                tCloud->points[i*lidardata.angle.size() + j].y = tCloud->points[i*lidardata.angle.size() + j].y + Base_Y;
+                tCloud->points[i*lidardata.angle.size() + j].z = tCloud->points[i*lidardata.angle.size() + j].z;
+                //
+                //网址输出
+
+                //根据反射强度显示颜色
+                if (lidardata.intensity[i][j] < 32)
+                {
+                    tCloud->points[i*lidardata.angle.size() + j].r = 0;
+                    tCloud->points[i*lidardata.angle.size() + j].g = lidardata.intensity[i][j] * 8;
+                    tCloud->points[i*lidardata.angle.size() + j].b = 255;
+                }
+                else if (lidardata.intensity[i][j] < 64 && lidardata.intensity[i][j] >= 32)
+                {
+                    tCloud->points[i*lidardata.angle.size() + j].r = 0;
+                    tCloud->points[i*lidardata.angle.size() + j].g = 255;
+                    tCloud->points[i*lidardata.angle.size() + j].b = 255 - (lidardata.intensity[i][j] - 32) * 4;
+                }
+                else if (lidardata.intensity[i][j] < 128 && lidardata.intensity[i][j] >= 64)
+                {
+                    tCloud->points[i*lidardata.angle.size() + j].r = 4 * lidardata.intensity[i][j] - 64;
+                    tCloud->points[i*lidardata.angle.size() + j].g = 255;
+                    tCloud->points[i*lidardata.angle.size() + j].b = 0;
+                }
+                else
+                {
+                    tCloud->points[i*lidardata.angle.size() + j].r = 255;
+                    tCloud->points[i*lidardata.angle.size() + j].g = (255 - lidardata.intensity[i][j] - 128) * 2;
+                    tCloud->points[i*lidardata.angle.size() + j].b = 0;
+                }
+
+            }
+        }
+    }
+
+    emit send_lidarC16(tCloud);
+}
+
+void Maindeal::CalculateCoordinatesCH128X1(LidarDataCHXXX lidardata)
+{
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr tCloud(new pcl::PointCloud<pcl::PointXYZRGB>);
+
+
+    float sinTheta1[128];                                   //ÊúÖ±œÇ
+    float sinTheta2[128];                                   //ÊúÖ±œÇ
+
+    float cos_x_angle = cos(XAngle * PI / 180);
+    float sin_x_angle = sin(XAngle * PI / 180);
+    float cos_y_angle = cos(YAngle * PI / 180);
+    float sin_y_angle = sin(YAngle * PI / 180);
+    float cos_z_angle = cos(0 * PI / 180);
+    float sin_z_angle = sin(0 * PI / 180);
+
+
+    for(int i = 0; i < 128; i++)
+    {
+        sinTheta1[i] = sin(((i % 4) * (-0.17)) * PI / 180.f);
+        sinTheta2[i] = sin(BigAngle[i / 4] * PI / 180.f);
+        for(int j = 0; j < (int)lidardata.angle[i].size(); j++)
+        {
+            if(lidardata.angle[i][j] - int(lidardata.angle[i][j] / 180) * 180 >= 30 && lidardata.angle[i][j] - int(lidardata.angle[i][j] / 180) * 180 <= 150)
+            {
+                float sinTheta = sinTheta2[i] + 2 * cos((lidardata.angle[i][j] * PI / 180) / 2.0) *  sinTheta1[i];
+                float cosTheta = sqrt(1 - sinTheta * sinTheta);
+                float sinAngle = sin(lidardata.angle[i][j] * PI / 180.f);
+                float cosAngle = cos(lidardata.angle[i][j] * PI / 180.f);
+                if (lidardata.distance[i][j] < 0.3)
+                {
+                    continue;
+                }
+                pcl::PointXYZRGB PointTemp1;
+                PointTemp1.y = (lidardata.distance[i][j] * cosTheta * sinAngle);
+                PointTemp1.x = (lidardata.distance[i][j] * cosTheta * cosAngle);
+                PointTemp1.z = (lidardata.distance[i][j] * sinTheta);
+
+                //坐标轴方向转换
+                float transformed_x = PointTemp1.x * cos_z_angle * cos_y_angle + PointTemp1.y * (-sin_z_angle * cos_x_angle + cos_z_angle * sin_y_angle * sin_x_angle) + PointTemp1.z * (sin_z_angle * sin_x_angle + cos_z_angle * sin_y_angle * cos_x_angle);
+                float transformed_y = PointTemp1.x * sin_z_angle * cos_y_angle + PointTemp1.y * (cos_z_angle * cos_x_angle + sin_z_angle * sin_y_angle * sin_x_angle) + PointTemp1.z * (sin_z_angle * sin_y_angle * cos_x_angle - cos_z_angle * sin_x_angle);
+                float transformed_z = (-sin_y_angle * PointTemp1.x + cos_y_angle * sin_x_angle * PointTemp1.y + cos_y_angle * cos_x_angle * PointTemp1.z);
+
+
+                //点转换
+                PointTemp1.x = transformed_x + Base_X;
+                PointTemp1.y = transformed_y + Base_Y;
+                PointTemp1.z = transformed_z;
+
+                if (lidardata.intensity[i][j] <= 63)
+                {
+                    PointTemp1.r = 0;
+                    PointTemp1.g = 254 - 4 * lidardata.intensity[i][j];
+                    PointTemp1.b = 255;
+                }
+                else if (lidardata.intensity[i][j] > 63 && lidardata.intensity[i][j] <= 127)
+                {
+                    PointTemp1.r = 0;
+                    PointTemp1.g = 4 * lidardata.intensity[i][j] - 254;
+                    PointTemp1.b = 510 - 4 * lidardata.intensity[i][j];
+                }
+                else if (lidardata.intensity[i][j] > 127 && lidardata.intensity[i][j] <= 191)
+                {
+                    PointTemp1.r = 4 * lidardata.intensity[i][j] - 510;
+                    PointTemp1.g = 255;
+                    PointTemp1.b = 0;
+                }
+                else if (lidardata.intensity[i][j] > 191 && lidardata.intensity[i][j] <= 255)
+                {
+                    PointTemp1.r = 255;
+                    PointTemp1.g = 1022 - 4 * lidardata.intensity[i][j];
+                    PointTemp1.b = 0;
+                }
+                //PointTemp1.a = lidardata.intensity[i][j];
+                tCloud->points.push_back(PointTemp1);
+            }
+        }
+    }
+
+    emit send_CH128X1(tCloud);
+
 }
 
 Maindeal::~Maindeal() {

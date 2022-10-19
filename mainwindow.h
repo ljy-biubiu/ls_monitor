@@ -55,13 +55,16 @@ public:
 
     void initConnect();
     void initUi();
+    void initControlPanel();
+    void initCameraShow();
+    void initPointCShow();
 
     //防区
     void drawArea();
     void draw2DArea(int idx);
     void ListtoConvex();
-    void quickSort(float s[], int l, int r);
-    void search_max_min(QList<pcl::PointXYZRGB> box);
+//    void quickSort(float s[], int l, int r);
+//    void search_max_min(QList<pcl::PointXYZRGB> box);
     //
 
     void showMovie();
@@ -101,8 +104,8 @@ private:
     Maindeal* maindeal;
     Ui::MainWindow *ui;
     FileSystem *fs;
-    GetlidarC16 *getC16;
-    GetlidarCH128X1 *getCH128X1;
+//    GetlidarC16 *getC16;
+//    GetlidarCH128X1 *getCH128X1;
     PaintArea *paintarea;
 
     QList<pcl::PointXYZRGB> Area2D_point[AREAS];
@@ -153,8 +156,8 @@ protected slots:
     void slot_view_Cluster_group(int id);
 
     //
-    void CalculateCoordinates(LidarData lidardata);
-    void CalculateCoordinatesCH128X1(LidarDataCHXXX lidardata);
+//    void CalculateCoordinates(LidarData lidardata);
+//    void CalculateCoordinatesCH128X1(LidarDataCHXXX lidardata);
     void showData();
     void addLidarSlot(SetData data);
 
@@ -163,6 +166,12 @@ protected slots:
     void addcuboid(Object obj, int id);
     void SearchIntruder(Object obj);
     void showAbout();
+
+    //
+    void get_CH128X1(pcl::PointCloud<pcl::PointXYZRGB>::Ptr ptr);
+    void get_lidarC16(pcl::PointCloud<pcl::PointXYZRGB>::Ptr ptr);
+
+
 private slots:
     void showFiltcloud(lidarIntruder intruder);
 

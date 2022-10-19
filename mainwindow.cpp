@@ -34,19 +34,18 @@ MainWindow::MainWindow(QWidget *parent) :
 
     fs =new FileSystem();
     Ali = new AliSmsAPIClient();
+    maindeal = new Maindeal(addlidar);
 
     timer = new QTimer(this);
     saveMovie_timer=new QTimer(this);
     sendSmsTimer = new QTimer(this);
 
-    maindeal = new Maindeal(addlidar);
-
     Creat_DataFileDir();// 启动先创建文件夹
     ReadDevice();
 
 
-//    qRegisterMetaType<Object>("Object");
-//    qRegisterMetaType<QString>("QString");
+    qRegisterMetaType<Object>("Object");
+    qRegisterMetaType<QString>("QString");
     //////////////////////////////////////////////////
 
 
@@ -60,15 +59,39 @@ MainWindow::MainWindow(QWidget *parent) :
     isShow = true;
     isTrick = false;
     isSendSms = true;
-    //pushButton左图标右文字
+    sendSmsStatus = false;
 
+    initPointCShow();
+    initCameraShow();
+    ReadConfig();//读取配置文件参数并更新
+    initControlPanel();
+    initConnect();
 
+    timer->start(10);
+    this->showMaximized();
+
+}
+
+MainWindow::~MainWindow()
+{
+    if(saveMovie_timer->isActive())
+    {
+        saveMovie_timer->stop();
+    }
+    delete ui;
+}
+
+void MainWindow::initPointCShow()
+{
     ui->qvtkWidget->SetRenderWindow(this->maindeal->getViewr()->getRenderWindow());
     this->maindeal->getViewr()->setupInteractor(ui->qvtkWidget->GetInteractor(), ui->qvtkWidget->GetRenderWindow());
     ui->qvtkWidget->update();
     this->maindeal->getViewr()->addCoordinateSystem(1.0);
     this->maindeal->getViewr()->initCameraParameters();
+}
 
+void MainWindow::initCameraShow()
+{
     //摄像头
 
     this->maindeal->getViewr()->setCameraPosition(addlidar->data.pos_x, addlidar->data.pos_y, addlidar->data.pos_z,\
@@ -83,32 +106,13 @@ MainWindow::MainWindow(QWidget *parent) :
     this->maindeal->getPtz()->start();
     ui->textEdit->append(this->maindeal->getPtz()->error);
     ui->textEdit->append(this->maindeal->getPtz()->mas);
+
     showMovie();
+}
 
 
-
-    if("CH128X1" == addlidar->data.lidarModel)
-    {
-        qRegisterMetaType<struct LidarDataCHXXX>("struct LidarDataCHXXX");
-        getCH128X1 = new GetlidarCH128X1(addlidar->data.lidarPort);
-        connect(getCH128X1, SIGNAL(SendData(struct LidarDataCHXXX)), this, SLOT(CalculateCoordinatesCH128X1(struct LidarDataCHXXX)));
-        getCH128X1->start();
-    }
-    else if("C16" == addlidar->data.lidarModel)
-    {
-        qRegisterMetaType<struct LidarData>("struct LidarData");
-        getC16 = new GetlidarC16(addlidar->data.lidarPort);
-        connect(getC16, SIGNAL(SendData(struct LidarData)), this, SLOT(CalculateCoordinates(struct LidarData)));
-        getC16->start();
-    }
-
-
-
-    ReadConfig();//读取配置文件参数并更新
-
-    timer->start(10);
-    sendSmsStatus = false;
-
+void MainWindow::initControlPanel()
+{
     if(0 == saveDataStatus)
     {
         ui->toolButton_savedata->setStyleSheet("border-image: url(:/images/OFF.png);");
@@ -121,20 +125,6 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         ui->toolButton_Portlight->setStyleSheet("border-image: url(:/images/OFF.png);");
     }
-
-    this->showMaximized();
-
-    initConnect();
-
-}
-
-MainWindow::~MainWindow()
-{
-    if(saveMovie_timer->isActive())
-    {
-        saveMovie_timer->stop();
-    }
-    delete ui;
 }
 
 void MainWindow::initUi()
@@ -431,213 +421,6 @@ void MainWindow::addLidarSlot(SetData data)
 }
 
 
-/*********************点云显示**********************************/
-//添加雷达安装角度与高度调整
-
-void MainWindow::CalculateCoordinates(LidarData lidardata)
-{
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr tCloud(new pcl::PointCloud<pcl::PointXYZRGB>);
-
-    double cosTheta[16] = { 0 };
-    double sinTheta[16] = { 0 };
-    for (int i = 0; i < 16; i++)
-    {
-        int theta = i;
-        if (i % 2 == 0)
-            theta = i - 15;
-        cosTheta[i] = cos(theta * PI / 180);
-        sinTheta[i] = sin(theta * PI / 180);
-    }
-    double sinAngle[5000] = { 0 };
-    double cosAngle[5000] = { 0 };
-    if (lidardata.angle.size()>5000) lidardata.angle.clear();
-    for (int i = 0; i < (int)lidardata.angle.size(); i++)
-    {
-        sinAngle[i] = sin(lidardata.angle[i] * PI / 180);
-        cosAngle[i] = cos(lidardata.angle[i] * PI / 180);
-    }
-
-    tCloud->width = lidardata.angle.size() * 16;
-    tCloud->height = 1;
-    tCloud->is_dense = false;
-    tCloud->points.resize(tCloud->width * tCloud->height);
-
-    for (int i = 0; i < 16; i++)
-    {
-
-        for (int j = 0; j < (int)lidardata.angle.size(); j++)
-        {
-            if (lidardata.distance[i][j] > 0)//滤除距离为0
-            {
-                tCloud->points[i*lidardata.angle.size() + j].x = (lidardata.distance[i][j] * cosTheta[i] * sinAngle[j]) / 100.f;
-                tCloud->points[i*lidardata.angle.size() + j].y = (lidardata.distance[i][j] * cosTheta[i] * cosAngle[j]) / 100.f;
-                tCloud->points[i*lidardata.angle.size() + j].z = (lidardata.distance[i][j] * sinTheta[i]) / 100.f;
-
-                //坐标轴方向转换
-                tCloud->points[i*lidardata.angle.size() + j].x = tCloud->points[i*lidardata.angle.size() + j].x * (cos(XAngle * PI / 180) + sin(YAngle * PI / 180));
-                tCloud->points[i*lidardata.angle.size() + j].y = tCloud->points[i*lidardata.angle.size() + j].y * (cos(YAngle * PI / 180) + sin(XAngle * PI / 180));
-                tCloud->points[i*lidardata.angle.size() + j].z = tCloud->points[i*lidardata.angle.size() + j].z;
-                //点转换
-                tCloud->points[i*lidardata.angle.size() + j].x = tCloud->points[i*lidardata.angle.size() + j].x + Base_X;
-                tCloud->points[i*lidardata.angle.size() + j].y = tCloud->points[i*lidardata.angle.size() + j].y + Base_Y;
-                tCloud->points[i*lidardata.angle.size() + j].z = tCloud->points[i*lidardata.angle.size() + j].z;
-                //
-                //网址输出
-
-                //根据反射强度显示颜色
-                if (lidardata.intensity[i][j] < 32)
-                {
-                    tCloud->points[i*lidardata.angle.size() + j].r = 0;
-                    tCloud->points[i*lidardata.angle.size() + j].g = lidardata.intensity[i][j] * 8;
-                    tCloud->points[i*lidardata.angle.size() + j].b = 255;
-                }
-                else if (lidardata.intensity[i][j] < 64 && lidardata.intensity[i][j] >= 32)
-                {
-                    tCloud->points[i*lidardata.angle.size() + j].r = 0;
-                    tCloud->points[i*lidardata.angle.size() + j].g = 255;
-                    tCloud->points[i*lidardata.angle.size() + j].b = 255 - (lidardata.intensity[i][j] - 32) * 4;
-                }
-                else if (lidardata.intensity[i][j] < 128 && lidardata.intensity[i][j] >= 64)
-                {
-                    tCloud->points[i*lidardata.angle.size() + j].r = 4 * lidardata.intensity[i][j] - 64;
-                    tCloud->points[i*lidardata.angle.size() + j].g = 255;
-                    tCloud->points[i*lidardata.angle.size() + j].b = 0;
-                }
-                else
-                {
-                    tCloud->points[i*lidardata.angle.size() + j].r = 255;
-                    tCloud->points[i*lidardata.angle.size() + j].g = (255 - lidardata.intensity[i][j] - 128) * 2;
-                    tCloud->points[i*lidardata.angle.size() + j].b = 0;
-                }
-
-            }
-        }
-    }
-
-    this->maindeal->getAlgonrithm()->tCloud->clear();
-    *this->maindeal->getAlgonrithm()->tCloud += *tCloud;
-    this->maindeal->getAlgonrithm()->start();
-    this->maindeal->getAlgonrithm()->wait();
-
-
-    paintarea->tCloud->clear();
-    *paintarea->tCloud  += *tCloud;
-    paintarea->update();
-
-
-    if(viewer_Cloud_id ==0)
-    {
-        std::string name ="All_cloud";
-        this->maindeal->getViewr()->removePointCloud(name);
-        this->maindeal->getViewr()->addPointCloud(tCloud,name);
-        this->maindeal->getViewr()->updatePointCloud(tCloud,name);
-    }
-    ui->qvtkWidget->update();
-
-}
-
-
-void MainWindow::CalculateCoordinatesCH128X1(LidarDataCHXXX lidardata)
-{
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr tCloud(new pcl::PointCloud<pcl::PointXYZRGB>);
-
-    float sinTheta1[128];                                   //ÊúÖ±œÇ
-    float sinTheta2[128];                                   //ÊúÖ±œÇ
-
-    float cos_x_angle = cos(XAngle * PI / 180);
-    float sin_x_angle = sin(XAngle * PI / 180);
-    float cos_y_angle = cos(YAngle * PI / 180);
-    float sin_y_angle = sin(YAngle * PI / 180);
-    float cos_z_angle = cos(0 * PI / 180);
-    float sin_z_angle = sin(0 * PI / 180);
-
-
-    for(int i = 0; i < 128; i++)
-    {
-        sinTheta1[i] = sin(((i % 4) * (-0.17)) * PI / 180.f);
-        sinTheta2[i] = sin(BigAngle[i / 4] * PI / 180.f);
-        for(int j = 0; j < (int)lidardata.angle[i].size(); j++)
-        {
-            if(lidardata.angle[i][j] - int(lidardata.angle[i][j] / 180) * 180 >= 30 && lidardata.angle[i][j] - int(lidardata.angle[i][j] / 180) * 180 <= 150)
-            {
-                float sinTheta = sinTheta2[i] + 2 * cos((lidardata.angle[i][j] * PI / 180) / 2.0) *  sinTheta1[i];
-                float cosTheta = sqrt(1 - sinTheta * sinTheta);
-                float sinAngle = sin(lidardata.angle[i][j] * PI / 180.f);
-                float cosAngle = cos(lidardata.angle[i][j] * PI / 180.f);
-                if (lidardata.distance[i][j] < 0.3)
-                {
-                    continue;
-                }
-                pcl::PointXYZRGB PointTemp1;
-                PointTemp1.y = (lidardata.distance[i][j] * cosTheta * sinAngle);
-                PointTemp1.x = (lidardata.distance[i][j] * cosTheta * cosAngle);
-                PointTemp1.z = (lidardata.distance[i][j] * sinTheta);
-
-                //坐标轴方向转换
-                float transformed_x = PointTemp1.x * cos_z_angle * cos_y_angle + PointTemp1.y * (-sin_z_angle * cos_x_angle + cos_z_angle * sin_y_angle * sin_x_angle) + PointTemp1.z * (sin_z_angle * sin_x_angle + cos_z_angle * sin_y_angle * cos_x_angle);
-                float transformed_y = PointTemp1.x * sin_z_angle * cos_y_angle + PointTemp1.y * (cos_z_angle * cos_x_angle + sin_z_angle * sin_y_angle * sin_x_angle) + PointTemp1.z * (sin_z_angle * sin_y_angle * cos_x_angle - cos_z_angle * sin_x_angle);
-                float transformed_z = (-sin_y_angle * PointTemp1.x + cos_y_angle * sin_x_angle * PointTemp1.y + cos_y_angle * cos_x_angle * PointTemp1.z);
-
-
-                //点转换
-                PointTemp1.x = transformed_x + Base_X;
-                PointTemp1.y = transformed_y + Base_Y;
-                PointTemp1.z = transformed_z;
-
-                if (lidardata.intensity[i][j] <= 63)
-                {
-                    PointTemp1.r = 0;
-                    PointTemp1.g = 254 - 4 * lidardata.intensity[i][j];
-                    PointTemp1.b = 255;
-                }
-                else if (lidardata.intensity[i][j] > 63 && lidardata.intensity[i][j] <= 127)
-                {
-                    PointTemp1.r = 0;
-                    PointTemp1.g = 4 * lidardata.intensity[i][j] - 254;
-                    PointTemp1.b = 510 - 4 * lidardata.intensity[i][j];
-                }
-                else if (lidardata.intensity[i][j] > 127 && lidardata.intensity[i][j] <= 191)
-                {
-                    PointTemp1.r = 4 * lidardata.intensity[i][j] - 510;
-                    PointTemp1.g = 255;
-                    PointTemp1.b = 0;
-                }
-                else if (lidardata.intensity[i][j] > 191 && lidardata.intensity[i][j] <= 255)
-                {
-                    PointTemp1.r = 255;
-                    PointTemp1.g = 1022 - 4 * lidardata.intensity[i][j];
-                    PointTemp1.b = 0;
-                }
-                //PointTemp1.a = lidardata.intensity[i][j];
-                tCloud->points.push_back(PointTemp1);
-            }
-        }
-    }
-    this->maindeal->getAlgonrithm()->tCloud->clear();
-    *this->maindeal->getAlgonrithm()->tCloud += *tCloud;
-    this->maindeal->getAlgonrithm()->start();
-    this->maindeal->getAlgonrithm()->wait();
-
-
-    paintarea->tCloud->clear();
-    *paintarea->tCloud  += *tCloud;
-    paintarea->update();
-    if(1 == this->maindeal->saveDataFlag)
-    {
-        *this->maindeal->getAllCloud() = *tCloud;
-    }
-
-    if(viewer_Cloud_id ==0)
-    {
-        std::string name ="All_cloud";
-        this->maindeal->getViewr()->removePointCloud(name);
-        this->maindeal->getViewr()->addPointCloud(tCloud,name);
-        this->maindeal->getViewr()->updatePointCloud(tCloud,name);
-    }
-
-    ui->qvtkWidget->update();
-}
-
 //防护区域内点云
 void MainWindow::showFiltcloud(lidarIntruder intruder)
 {
@@ -698,6 +481,58 @@ void MainWindow::showFiltcloud(lidarIntruder intruder)
     }
 
 }
+
+void MainWindow::get_lidarC16(pcl::PointCloud<pcl::PointXYZRGB>::Ptr ptr)
+{
+    this->maindeal->getAlgonrithm()->tCloud->clear();
+    *this->maindeal->getAlgonrithm()->tCloud += *ptr;
+    this->maindeal->getAlgonrithm()->start();
+    this->maindeal->getAlgonrithm()->wait();
+
+
+    paintarea->tCloud->clear();
+    *paintarea->tCloud  += *ptr;
+    paintarea->update();
+
+
+    if(viewer_Cloud_id ==0)
+    {
+        std::string name ="All_cloud";
+        this->maindeal->getViewr()->removePointCloud(name);
+        this->maindeal->getViewr()->addPointCloud(ptr,name);
+        this->maindeal->getViewr()->updatePointCloud(ptr,name);
+    }
+    ui->qvtkWidget->update();
+
+}
+
+void MainWindow::get_CH128X1(pcl::PointCloud<pcl::PointXYZRGB>::Ptr ptr)
+{
+    this->maindeal->getAlgonrithm()->tCloud->clear();
+    *this->maindeal->getAlgonrithm()->tCloud += *ptr;
+    this->maindeal->getAlgonrithm()->start();
+    this->maindeal->getAlgonrithm()->wait();
+
+
+    paintarea->tCloud->clear();
+    *paintarea->tCloud  += *ptr;
+    paintarea->update();
+    if(1 == this->maindeal->saveDataFlag)
+    {
+        *this->maindeal->getAllCloud() = *ptr;
+    }
+
+    if(viewer_Cloud_id ==0)
+    {
+        std::string name ="All_cloud";
+        this->maindeal->getViewr()->removePointCloud(name);
+        this->maindeal->getViewr()->addPointCloud(ptr,name);
+        this->maindeal->getViewr()->updatePointCloud(ptr,name);
+    }
+
+    ui->qvtkWidget->update();
+}
+
 /*****************************************************************************
 函 数 名  : showClustem_Obj(Clustem_Obj Cl_obj)
 功能描述  : sudo
@@ -1033,7 +868,7 @@ void MainWindow::ListtoConvex()
     for(int index=0;index<3;index++)
     {
         paintarea->Area2d_point[index].clear();
-        search_max_min(paintarea->area[index].Area2D_point_T);
+        Maindeal::search_max_min(paintarea->area[index].Area2D_point_T);
         for (int i = 0; i < paintarea->area[index].Area2D_point_T.size(); i++)
         {
             pt.x = paintarea->area[index].Area2D_point_T[i].x;
@@ -1065,45 +900,6 @@ void MainWindow::ListtoConvex()
 }
 
 
-//计算最大最小
-void MainWindow::search_max_min(QList<pcl::PointXYZRGB> box)
-{
-    if (box.size()>0)
-    {
-        float point_x[50] = { 0 };
-        float point_y[50] = { 0 };
-
-        for (unsigned int i = 0; i < box.size(); i++)
-        {
-            point_x[i] = box[i].x * 1000;
-            point_y[i] = box[i].y * 1000;
-        }
-        quickSort(point_x, 0, box.size() - 1);
-        quickSort(point_y, 0, box.size() - 1);
-    }
-}
-
-void MainWindow::quickSort(float s[], int l, int r)
-{
-    if (l< r)
-    {
-        int i = l, j = r, x = s[l];
-        while (i < j)
-        {
-            while (i < j && s[j] >= x) // 从右向左找第一个小于x的数
-                j--;
-            if (i < j)
-                s[i++] = s[j];
-            while (i < j && s[i]< x) // 从左向右找第一个大于等于x的数
-                i++;
-            if (i < j)
-                s[j--] = s[i];
-        }
-        s[i] = x;
-        quickSort(s, l, i - 1); // 递归调用
-        quickSort(s, i + 1, r);
-    }
-}
 
 
 
