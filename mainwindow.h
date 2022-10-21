@@ -37,6 +37,11 @@
 #include "UI/include/aboutdialog.h"
 #include "maindeal.h"
 
+// Visualization Toolkit (VTK)
+#include <vtkRenderWindow.h>
+#include <QVTKOpenGLNativeWidget.h>
+#include "vtkGenericOpenGLRenderWindow.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -102,6 +107,9 @@ public:
 signals:
     void new_Day();
 private:
+    //vtkSmartPointer<vtkGenericOpenGLRenderWindow> renderWindow;
+    QVTKOpenGLNativeWidget *qvtkOpenglNativeWidget;
+
     Maindeal* maindeal;
     Ui::MainWindow *ui;
 //    FileSystem *fs;

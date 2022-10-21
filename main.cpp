@@ -22,6 +22,8 @@
 #include <QDateTime>
 #include <QDialogButtonBox>
 
+#include <sys/resource.h>
+
 
 void outputMessage(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
@@ -62,6 +64,7 @@ void outputMessage(QtMsgType type, const QMessageLogContext &context, const QStr
 
 int main(int argc, char *argv[])
 {
+    QApplication::setAttribute(Qt::AA_UseSoftwareOpenGL);
     QApplication a(argc, argv);
 
   //  qInstallMessageHandler(outputMessage);//增加日志
@@ -75,6 +78,12 @@ int main(int argc, char *argv[])
         qApp->setStyleSheet(qss);
         file.close();
     }
+
+    system("pwd");
+        system("pwd");
+            system("pwd");
+                system("pwd");
+                    system("pwd");
 
     MainWindow w;
 

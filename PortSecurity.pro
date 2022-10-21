@@ -6,6 +6,8 @@
 
 QT       += core gui
 
+CONFIG += c++14
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = PortSecurity
@@ -76,11 +78,10 @@ INCLUDEPATH += $$PWD/.
 
 #Boost
 INCLUDEPATH += /usr/local/include/boost/
-LIBS += /usr/local/lib/libboost_wave.so
 LIBS += /usr/local/lib/libboost_*
 
-INCLUDEPATH += /usr/include/opencv4/
-LIBS += /usr/lib/x86_64-linux-gnu/libopencv_*.so
+INCLUDEPATH += /usr/opencv-3.4.8/include/
+LIBS += /usr/opencv-3.4.8/lib/libopencv_*
 
 #LIBS += /usr/lib/x86_64-linux-gnu/libboost_*.so
 LIBS +=/usr/lib/x86_64-linux-gnu/libalibabacloud-sdk-dysmsapi.so

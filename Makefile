@@ -12,12 +12,12 @@ EQ            = =
 
 ####### Compiler, tools and options
 
-CC            = gcc
-CXX           = g++
+CC            = gcc -g
+CXX           = g++ -g
 DEFINES       = -DQT_DEPRECATED_WARNINGS -DQT_QML_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -g -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
-CXXFLAGS      = -pipe -g -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I. -IUI/include -IUI/src -IUI/forms -ILED/include -ILED/src -ISDK/include -ISDK/src -ISDK/HCInclude/incEn -IMONITOR/include -IMONITOR/src -isystem /usr/include/eigen3 -isystem /usr/local/include/vtk-8.2 -isystem /usr/local/include/pcl-1.11 -I. -isystem /usr/local/include/boost -isystem /usr/include/opencv4 -I. -I../../../Qt5.14.2/5.14.2/gcc_64/include -I../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui -I../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore -Itemp/moc -isystem /usr/include/libdrm -Itemp/ui -I../../../Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++
+CXXFLAGS      = -pipe -g -std=gnu++1y -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
+INCPATH       = -I. -IUI/include -IUI/src -IUI/forms -IALARMLED/include -IALARMLED/src -ISDK/include -ISDK/src -ISDK/HCInclude/incEn -IMONITOR/include -IMONITOR/src -IGENERALTOOL/include -IGENERALTOOL/src -isystem /usr/include/eigen3 -isystem /usr/local/include/vtk-8.2 -isystem /usr/local/include/pcl-1.11 -I. -isystem /usr/local/include/boost -I/usr/opencv-3.4.8/include -I. -I../../../Qt5.14.2/5.14.2/gcc_64/include -I../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui -I../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore -Itemp/moc -isystem /usr/include/libdrm -Itemp/ui -I../../../Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++
 QMAKE         = /home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -38,9 +38,9 @@ TAR           = tar -cf
 COMPRESS      = gzip -9f
 DISTNAME      = PortSecurity1.0.0
 DISTDIR = /home/ljy/ljy_ws/PortSecurity-master/src/temp/obj/PortSecurity1.0.0
-LINK          = g++
+LINK          = g++ -g
 LFLAGS        = -Wl,-rpath,'$$ORIGIN' -Wl,-rpath,'$$ORIGIN/SDK/lib' -Wl,-rpath,'$$ORIGIN/SDK/HCNetSDKCom' -no-pie -Wl,-rpath,/home/ljy/Qt5.14.2/5.14.2/gcc_64/lib
-LIBS          = $(SUBLIBS) /usr/local/lib/libvtk*.so /usr/local/lib/libpcl_*.so /usr/local/lib/libboost_wave.so /usr/local/lib/libboost_* /usr/lib/x86_64-linux-gnu/libopencv_*.so /usr/lib/x86_64-linux-gnu/libalibabacloud-sdk-dysmsapi.so /usr/lib/x86_64-linux-gnu/libalibabacloud-sdk-core.so -ldl -L/home/ljy/ljy_ws/PortSecurity-master/src/SDK/lib/ -lAudioRender -lcrypto -lHCCore -lhcnetsdk -lhpr -lPlayCtrl -lSuperRender -lssl /home/ljy/Qt5.14.2/5.14.2/gcc_64/lib/libQt5Widgets.so /home/ljy/Qt5.14.2/5.14.2/gcc_64/lib/libQt5Gui.so /home/ljy/Qt5.14.2/5.14.2/gcc_64/lib/libQt5Core.so -lGL -lpthread   
+LIBS          = $(SUBLIBS) /usr/local/lib/libvtk*.so /usr/local/lib/libpcl_*.so /usr/local/lib/libboost_wave.so /usr/local/lib/libboost_* /usr/opencv-3.4.8/lib/libopencv_* /usr/opencv-3.4.8/lib/libopencv_core.so.3.4 /usr/lib/x86_64-linux-gnu/libalibabacloud-sdk-dysmsapi.so /usr/lib/x86_64-linux-gnu/libalibabacloud-sdk-core.so -ldl -L/home/ljy/ljy_ws/PortSecurity-master/src/SDK/lib/ -lAudioRender -lcrypto -lHCCore -lhcnetsdk -lhpr -lPlayCtrl -lSuperRender -lssl /home/ljy/Qt5.14.2/5.14.2/gcc_64/lib/libQt5Widgets.so /home/ljy/Qt5.14.2/5.14.2/gcc_64/lib/libQt5Gui.so /home/ljy/Qt5.14.2/5.14.2/gcc_64/lib/libQt5Core.so -lGL -lpthread   
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -54,7 +54,6 @@ OBJECTS_DIR   = temp/obj/
 
 SOURCES       = main.cpp \
 		mainwindow.cpp \
-		filesystem.cpp \
 		maindeal.cpp \
 		UI/src/aboutdialog.cpp \
 		UI/src/imageWidget.cpp \
@@ -65,8 +64,8 @@ SOURCES       = main.cpp \
 		UI/src/titlebar.cpp \
 		UI/src/maintitlebar.cpp \
 		UI/src/childtitlebar.cpp \
-		LED/src/LED_RS232_API.cpp \
-		LED/src/LED_serverAPI.cpp \
+		ALARMLED/src/LED_RS232_API.cpp \
+		ALARMLED/src/LED_serverAPI.cpp \
 		SDK/src/AliSmsAPIClient.cpp \
 		MONITOR/src/algonrithm.cpp \
 		MONITOR/src/getlidarc16.cpp \
@@ -74,7 +73,8 @@ SOURCES       = main.cpp \
 		MONITOR/src/grid_height_difference.cpp \
 		MONITOR/src/ptz.cpp \
 		MONITOR/src/lidarclustem.cpp \
-		MONITOR/src/lidarroaddetect.cpp temp/rcc/qrc_image.cpp \
+		MONITOR/src/lidarroaddetect.cpp \
+		GENERALTOOL/src/filesystem.cpp temp/rcc/qrc_image.cpp \
 		temp/rcc/qrc_qss.cpp \
 		temp/rcc/qrc_images.cpp \
 		temp/moc/moc_mainwindow.cpp \
@@ -95,7 +95,6 @@ SOURCES       = main.cpp \
 		temp/moc/moc_lidarclustem.cpp
 OBJECTS       = temp/obj/main.o \
 		temp/obj/mainwindow.o \
-		temp/obj/filesystem.o \
 		temp/obj/maindeal.o \
 		temp/obj/aboutdialog.o \
 		temp/obj/imageWidget.o \
@@ -116,6 +115,7 @@ OBJECTS       = temp/obj/main.o \
 		temp/obj/ptz.o \
 		temp/obj/lidarclustem.o \
 		temp/obj/lidarroaddetect.o \
+		temp/obj/filesystem.o \
 		temp/obj/qrc_image.o \
 		temp/obj/qrc_qss.o \
 		temp/obj/qrc_images.o \
@@ -136,9 +136,10 @@ OBJECTS       = temp/obj/main.o \
 		temp/obj/moc_ptz.o \
 		temp/obj/moc_lidarclustem.o
 DIST          = UI/ui.pri \
-		LED/led.pri \
+		ALARMLED/alarmled.pri \
 		SDK/sdk.pri \
 		MONITOR/monitor.pri \
+		GENERALTOOL/generaltool.pri \
 		../../../Qt5.14.2/5.14.2/gcc_64/mkspecs/features/spec_pre.prf \
 		../../../Qt5.14.2/5.14.2/gcc_64/mkspecs/common/unix.conf \
 		../../../Qt5.14.2/5.14.2/gcc_64/mkspecs/common/linux.conf \
@@ -334,9 +335,10 @@ DIST          = UI/ui.pri \
 		../../../Qt5.14.2/5.14.2/gcc_64/mkspecs/features/toolchain.prf \
 		../../../Qt5.14.2/5.14.2/gcc_64/mkspecs/features/default_pre.prf \
 		UI/ui.pri \
-		LED/led.pri \
+		ALARMLED/alarmled.pri \
 		SDK/sdk.pri \
 		MONITOR/monitor.pri \
+		GENERALTOOL/generaltool.pri \
 		../../../Qt5.14.2/5.14.2/gcc_64/mkspecs/features/resolve_config.prf \
 		../../../Qt5.14.2/5.14.2/gcc_64/mkspecs/features/default_post.prf \
 		../../../Qt5.14.2/5.14.2/gcc_64/mkspecs/features/qml_debug.prf \
@@ -356,7 +358,6 @@ DIST          = UI/ui.pri \
 		../../../Qt5.14.2/5.14.2/gcc_64/mkspecs/features/lex.prf \
 		PortSecurity.pro mainwindow.h \
 		common.h \
-		filesystem.h \
 		public/Version.h \
 		maindeal.h \
 		UI/include/childtitlebar.h \
@@ -368,10 +369,10 @@ DIST          = UI/ui.pri \
 		UI/include/smsdialog.h \
 		UI/include/addlidar.h \
 		UI/include/titlebar.h \
-		LED/include/LED_RS232_API.h \
-		LED/include/LED_serverAPI.h \
+		ALARMLED/include/LED_RS232_API.h \
+		ALARMLED/include/LED_serverAPI.h \
 		SDK/include/AliSmsAPIClient.h \
-		/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn/DataTyp.h \
+		SDK/HCInclude/incEn/DataType.h \
 		SDK/HCInclude/incEn/DecodeCardSdk.h \
 		SDK/HCInclude/incEn/HCNetSDK.h \
 		SDK/HCInclude/incEn/LinuxPlayM4.h \
@@ -383,9 +384,9 @@ DIST          = UI/ui.pri \
 		MONITOR/include/ptz.h \
 		MONITOR/include/common_struct.h \
 		MONITOR/include/lidarclustem.h \
-		MONITOR/include/lidarroaddetect.h main.cpp \
+		MONITOR/include/lidarroaddetect.h \
+		GENERALTOOL/include/filesystem.h main.cpp \
 		mainwindow.cpp \
-		filesystem.cpp \
 		maindeal.cpp \
 		UI/src/aboutdialog.cpp \
 		UI/src/imageWidget.cpp \
@@ -396,8 +397,8 @@ DIST          = UI/ui.pri \
 		UI/src/titlebar.cpp \
 		UI/src/maintitlebar.cpp \
 		UI/src/childtitlebar.cpp \
-		LED/src/LED_RS232_API.cpp \
-		LED/src/LED_serverAPI.cpp \
+		ALARMLED/src/LED_RS232_API.cpp \
+		ALARMLED/src/LED_serverAPI.cpp \
 		SDK/src/AliSmsAPIClient.cpp \
 		MONITOR/src/algonrithm.cpp \
 		MONITOR/src/getlidarc16.cpp \
@@ -405,7 +406,8 @@ DIST          = UI/ui.pri \
 		MONITOR/src/grid_height_difference.cpp \
 		MONITOR/src/ptz.cpp \
 		MONITOR/src/lidarclustem.cpp \
-		MONITOR/src/lidarroaddetect.cpp
+		MONITOR/src/lidarroaddetect.cpp \
+		GENERALTOOL/src/filesystem.cpp
 QMAKE_TARGET  = PortSecurity
 DESTDIR       = bin/
 TARGET        = bin/PortSecurity
@@ -613,9 +615,10 @@ Makefile: PortSecurity.pro ../../../Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++/qma
 		../../../Qt5.14.2/5.14.2/gcc_64/mkspecs/features/toolchain.prf \
 		../../../Qt5.14.2/5.14.2/gcc_64/mkspecs/features/default_pre.prf \
 		UI/ui.pri \
-		LED/led.pri \
+		ALARMLED/alarmled.pri \
 		SDK/sdk.pri \
 		MONITOR/monitor.pri \
+		GENERALTOOL/generaltool.pri \
 		../../../Qt5.14.2/5.14.2/gcc_64/mkspecs/features/resolve_config.prf \
 		../../../Qt5.14.2/5.14.2/gcc_64/mkspecs/features/default_post.prf \
 		../../../Qt5.14.2/5.14.2/gcc_64/mkspecs/features/qml_debug.prf \
@@ -833,9 +836,10 @@ Makefile: PortSecurity.pro ../../../Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++/qma
 ../../../Qt5.14.2/5.14.2/gcc_64/mkspecs/features/toolchain.prf:
 ../../../Qt5.14.2/5.14.2/gcc_64/mkspecs/features/default_pre.prf:
 UI/ui.pri:
-LED/led.pri:
+ALARMLED/alarmled.pri:
 SDK/sdk.pri:
 MONITOR/monitor.pri:
+GENERALTOOL/generaltool.pri:
 ../../../Qt5.14.2/5.14.2/gcc_64/mkspecs/features/resolve_config.prf:
 ../../../Qt5.14.2/5.14.2/gcc_64/mkspecs/features/default_post.prf:
 ../../../Qt5.14.2/5.14.2/gcc_64/mkspecs/features/qml_debug.prf:
@@ -873,8 +877,8 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents image.qrc other/qss.qrc other/images.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents ../../../Qt5.14.2/5.14.2/gcc_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents mainwindow.h common.h filesystem.h public/Version.h maindeal.h UI/include/childtitlebar.h UI/include/maintitlebar.h UI/include/aboutdialog.h UI/include/imageWidget.h UI/include/paintarea.h UI/include/setroi.h UI/include/smsdialog.h UI/include/addlidar.h UI/include/titlebar.h LED/include/LED_RS232_API.h LED/include/LED_serverAPI.h SDK/include/AliSmsAPIClient.h /home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn/DataTyp.h SDK/HCInclude/incEn/DecodeCardSdk.h SDK/HCInclude/incEn/HCNetSDK.h SDK/HCInclude/incEn/LinuxPlayM4.h SDK/HCInclude/incEn/PlayM4.h MONITOR/include/algonrithm.h MONITOR/include/getlidarc16.h MONITOR/include/getlidarch128x1.h MONITOR/include/grid_height_difference.h MONITOR/include/ptz.h MONITOR/include/common_struct.h MONITOR/include/lidarclustem.h MONITOR/include/lidarroaddetect.h $(DISTDIR)/
-	$(COPY_FILE) --parents main.cpp mainwindow.cpp filesystem.cpp maindeal.cpp UI/src/aboutdialog.cpp UI/src/imageWidget.cpp UI/src/paintarea.cpp UI/src/setroi.cpp UI/src/smsdialog.cpp UI/src/addlidar.cpp UI/src/titlebar.cpp UI/src/maintitlebar.cpp UI/src/childtitlebar.cpp LED/src/LED_RS232_API.cpp LED/src/LED_serverAPI.cpp SDK/src/AliSmsAPIClient.cpp MONITOR/src/algonrithm.cpp MONITOR/src/getlidarc16.cpp MONITOR/src/getlidarch128x1.cpp MONITOR/src/grid_height_difference.cpp MONITOR/src/ptz.cpp MONITOR/src/lidarclustem.cpp MONITOR/src/lidarroaddetect.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents mainwindow.h common.h public/Version.h maindeal.h UI/include/childtitlebar.h UI/include/maintitlebar.h UI/include/aboutdialog.h UI/include/imageWidget.h UI/include/paintarea.h UI/include/setroi.h UI/include/smsdialog.h UI/include/addlidar.h UI/include/titlebar.h ALARMLED/include/LED_RS232_API.h ALARMLED/include/LED_serverAPI.h SDK/include/AliSmsAPIClient.h SDK/HCInclude/incEn/DataType.h SDK/HCInclude/incEn/DecodeCardSdk.h SDK/HCInclude/incEn/HCNetSDK.h SDK/HCInclude/incEn/LinuxPlayM4.h SDK/HCInclude/incEn/PlayM4.h MONITOR/include/algonrithm.h MONITOR/include/getlidarc16.h MONITOR/include/getlidarch128x1.h MONITOR/include/grid_height_difference.h MONITOR/include/ptz.h MONITOR/include/common_struct.h MONITOR/include/lidarclustem.h MONITOR/include/lidarroaddetect.h GENERALTOOL/include/filesystem.h $(DISTDIR)/
+	$(COPY_FILE) --parents main.cpp mainwindow.cpp maindeal.cpp UI/src/aboutdialog.cpp UI/src/imageWidget.cpp UI/src/paintarea.cpp UI/src/setroi.cpp UI/src/smsdialog.cpp UI/src/addlidar.cpp UI/src/titlebar.cpp UI/src/maintitlebar.cpp UI/src/childtitlebar.cpp ALARMLED/src/LED_RS232_API.cpp ALARMLED/src/LED_serverAPI.cpp SDK/src/AliSmsAPIClient.cpp MONITOR/src/algonrithm.cpp MONITOR/src/getlidarc16.cpp MONITOR/src/getlidarch128x1.cpp MONITOR/src/grid_height_difference.cpp MONITOR/src/ptz.cpp MONITOR/src/lidarclustem.cpp MONITOR/src/lidarroaddetect.cpp GENERALTOOL/src/filesystem.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents UI/forms/aboutdialog.ui UI/forms/setroi.ui UI/forms/smsdialog.ui UI/forms/addpolygon.ui UI/forms/maintitlebar.ui UI/forms/childtitlebar.ui UI/forms/addlidar.ui mainwindow.ui $(DISTDIR)/
 
 
@@ -1214,7 +1218,7 @@ compiler_moc_predefs_make_all: temp/moc/moc_predefs.h
 compiler_moc_predefs_clean:
 	-$(DEL_FILE) temp/moc/moc_predefs.h
 temp/moc/moc_predefs.h: ../../../Qt5.14.2/5.14.2/gcc_64/mkspecs/features/data/dummy.cpp
-	g++ -pipe -g -Wall -Wextra -dM -E -o temp/moc/moc_predefs.h ../../../Qt5.14.2/5.14.2/gcc_64/mkspecs/features/data/dummy.cpp
+	g++ -g -pipe -g -std=gnu++1y -Wall -Wextra -dM -E -o temp/moc/moc_predefs.h ../../../Qt5.14.2/5.14.2/gcc_64/mkspecs/features/data/dummy.cpp
 
 compiler_moc_header_make_all: temp/moc/moc_mainwindow.cpp temp/moc/moc_maindeal.cpp temp/moc/moc_childtitlebar.cpp temp/moc/moc_maintitlebar.cpp temp/moc/moc_aboutdialog.cpp temp/moc/moc_imageWidget.cpp temp/moc/moc_paintarea.cpp temp/moc/moc_setroi.cpp temp/moc/moc_smsdialog.cpp temp/moc/moc_addlidar.cpp temp/moc/moc_titlebar.cpp temp/moc/moc_algonrithm.cpp temp/moc/moc_getlidarc16.cpp temp/moc/moc_getlidarch128x1.cpp temp/moc/moc_ptz.cpp temp/moc/moc_lidarclustem.cpp
 compiler_moc_header_clean:
@@ -1358,7 +1362,7 @@ temp/moc/moc_mainwindow.cpp: mainwindow.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QMetaType \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QList \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QPointF \
-		filesystem.h \
+		GENERALTOOL/include/filesystem.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QFileDialog \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qfiledialog.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdir.h \
@@ -1369,6 +1373,142 @@ temp/moc/moc_mainwindow.cpp: mainwindow.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QMutex \
 		MONITOR/include/getlidarch128x1.h \
 		UI/include/paintarea.h \
+		/usr/opencv-3.4.8/include/opencv2/opencv.hpp \
+		/usr/opencv-3.4.8/include/opencv2/opencv_modules.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvdef.h \
+		/usr/opencv-3.4.8/include/opencv2/core/hal/interface.h \
+		/usr/opencv-3.4.8/include/opencv2/core/cv_cpu_dispatch.h \
+		/usr/opencv-3.4.8/include/opencv2/core/cv_cpu_helper.h \
+		/usr/opencv-3.4.8/include/opencv2/core/hal/msa_macros.h \
+		/usr/opencv-3.4.8/include/opencv2/core/fast_math.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/version.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/base.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvstd.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/ptr.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/neon_utils.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/vsx_utils.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/check.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/traits.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/matx.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/saturate.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/mat.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/bufferpool.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/mat.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/persistence.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/operations.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvstd.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/utility.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/core_c.h \
+		/usr/opencv-3.4.8/include/opencv2/core/types_c.h \
+		/usr/opencv-3.4.8/include/opencv2/core/optim.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/ovx.hpp \
+		/usr/opencv-3.4.8/include/opencv2/calib3d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/features2d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/miniflann.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/defines.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/config.h \
+		/usr/opencv-3.4.8/include/opencv2/core/affine.hpp \
+		/usr/opencv-3.4.8/include/opencv2/calib3d/calib3d_c.h \
+		/usr/opencv-3.4.8/include/opencv2/dnn.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dnn.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/async.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dict.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/layer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dnn.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/utils/inference_engine.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/flann_base.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/general.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/matrix.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/params.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/any.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/saving.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/nn_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/result_set.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/all_indices.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kdtree_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/dynamic_bitset.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/dist.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/heap.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/allocator.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/random.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kdtree_single_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kmeans_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/logger.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/composite_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/linear_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/hierarchical_clustering_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/lsh_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/lsh_table.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/autotuned_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/ground_truth.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/index_testing.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/timer.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/sampling.h \
+		/usr/opencv-3.4.8/include/opencv2/highgui.hpp \
+		/usr/opencv-3.4.8/include/opencv2/imgcodecs.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videoio.hpp \
+		/usr/opencv-3.4.8/include/opencv2/highgui/highgui_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc/imgproc_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc/types_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgcodecs/imgcodecs_c.h \
+		/usr/opencv-3.4.8/include/opencv2/videoio/videoio_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc.hpp \
+		/usr/opencv-3.4.8/include/opencv2/ml.hpp \
+		/usr/opencv-3.4.8/include/opencv2/ml/ml.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect/detection_based_tracker.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect/objdetect_c.h \
+		/usr/opencv-3.4.8/include/opencv2/photo.hpp \
+		/usr/opencv-3.4.8/include/opencv2/photo/photo_c.h \
+		/usr/opencv-3.4.8/include/opencv2/shape.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/emdL1.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/shape_transformer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/hist_cost.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/shape_distance.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/warpers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/warpers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda_types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/warpers_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/matchers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/motion_estimators.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/util.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/util_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/camera.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/exposure_compensate.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/seam_finders.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/blenders.hpp \
+		/usr/opencv-3.4.8/include/opencv2/superres.hpp \
+		/usr/opencv-3.4.8/include/opencv2/superres/optical_flow.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/tracking.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/background_segm.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/tracking_c.h \
+		/usr/opencv-3.4.8/include/opencv2/videostab.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/stabilizer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/global_motion.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/optical_flow.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/motion_core.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/outlier_rejection.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/motion_stabilizing.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/frame_source.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/log.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/inpainting.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/fast_marching.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/fast_marching_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/deblurring.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/wobble_suppression.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/ring_buffer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/widgets.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/viz3d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/vizcore.hpp \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QMouseEvent \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QPoint \
@@ -1415,17 +1555,17 @@ temp/moc/moc_mainwindow.cpp: mainwindow.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qactiongroup.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QMenu \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qmenu.h \
+		UI/include/aboutdialog.h \
+		maindeal.h \
+		ALARMLED/include/LED_RS232_API.h \
+		ALARMLED/include/LED_serverAPI.h \
 		SDK/include/AliSmsAPIClient.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QString \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QDateTime \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdatetime.h \
-		UI/include/aboutdialog.h \
-		maindeal.h \
-		LED/include/LED_RS232_API.h \
-		LED/include/LED_serverAPI.h \
 		temp/moc/moc_predefs.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/bin/moc
-	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/include/opencv4 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o temp/moc/moc_mainwindow.cpp
+	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/include -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/opencv-3.4.8/include -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o temp/moc/moc_mainwindow.cpp
 
 temp/moc/moc_maindeal.cpp: maindeal.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QDebug \
@@ -1494,6 +1634,8 @@ temp/moc/moc_maindeal.cpp: maindeal.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsharedpointer.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsharedpointer_impl.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QObject \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QSettings \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsettings.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmath.h \
 		common.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QTableWidgetItem \
@@ -1559,7 +1701,7 @@ temp/moc/moc_maindeal.cpp: maindeal.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QMetaType \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QList \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QPointF \
-		filesystem.h \
+		GENERALTOOL/include/filesystem.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QFileDialog \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qfiledialog.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdir.h \
@@ -1572,6 +1714,142 @@ temp/moc/moc_maindeal.cpp: maindeal.h \
 		MONITOR/include/common_struct.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QMutex \
 		MONITOR/include/algonrithm.h \
+		/usr/opencv-3.4.8/include/opencv2/opencv.hpp \
+		/usr/opencv-3.4.8/include/opencv2/opencv_modules.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvdef.h \
+		/usr/opencv-3.4.8/include/opencv2/core/hal/interface.h \
+		/usr/opencv-3.4.8/include/opencv2/core/cv_cpu_dispatch.h \
+		/usr/opencv-3.4.8/include/opencv2/core/cv_cpu_helper.h \
+		/usr/opencv-3.4.8/include/opencv2/core/hal/msa_macros.h \
+		/usr/opencv-3.4.8/include/opencv2/core/fast_math.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/version.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/base.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvstd.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/ptr.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/neon_utils.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/vsx_utils.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/check.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/traits.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/matx.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/saturate.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/mat.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/bufferpool.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/mat.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/persistence.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/operations.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvstd.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/utility.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/core_c.h \
+		/usr/opencv-3.4.8/include/opencv2/core/types_c.h \
+		/usr/opencv-3.4.8/include/opencv2/core/optim.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/ovx.hpp \
+		/usr/opencv-3.4.8/include/opencv2/calib3d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/features2d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/miniflann.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/defines.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/config.h \
+		/usr/opencv-3.4.8/include/opencv2/core/affine.hpp \
+		/usr/opencv-3.4.8/include/opencv2/calib3d/calib3d_c.h \
+		/usr/opencv-3.4.8/include/opencv2/dnn.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dnn.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/async.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dict.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/layer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dnn.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/utils/inference_engine.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/flann_base.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/general.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/matrix.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/params.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/any.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/saving.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/nn_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/result_set.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/all_indices.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kdtree_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/dynamic_bitset.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/dist.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/heap.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/allocator.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/random.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kdtree_single_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kmeans_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/logger.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/composite_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/linear_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/hierarchical_clustering_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/lsh_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/lsh_table.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/autotuned_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/ground_truth.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/index_testing.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/timer.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/sampling.h \
+		/usr/opencv-3.4.8/include/opencv2/highgui.hpp \
+		/usr/opencv-3.4.8/include/opencv2/imgcodecs.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videoio.hpp \
+		/usr/opencv-3.4.8/include/opencv2/highgui/highgui_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc/imgproc_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc/types_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgcodecs/imgcodecs_c.h \
+		/usr/opencv-3.4.8/include/opencv2/videoio/videoio_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc.hpp \
+		/usr/opencv-3.4.8/include/opencv2/ml.hpp \
+		/usr/opencv-3.4.8/include/opencv2/ml/ml.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect/detection_based_tracker.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect/objdetect_c.h \
+		/usr/opencv-3.4.8/include/opencv2/photo.hpp \
+		/usr/opencv-3.4.8/include/opencv2/photo/photo_c.h \
+		/usr/opencv-3.4.8/include/opencv2/shape.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/emdL1.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/shape_transformer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/hist_cost.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/shape_distance.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/warpers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/warpers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda_types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/warpers_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/matchers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/motion_estimators.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/util.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/util_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/camera.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/exposure_compensate.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/seam_finders.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/blenders.hpp \
+		/usr/opencv-3.4.8/include/opencv2/superres.hpp \
+		/usr/opencv-3.4.8/include/opencv2/superres/optical_flow.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/tracking.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/background_segm.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/tracking_c.h \
+		/usr/opencv-3.4.8/include/opencv2/videostab.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/stabilizer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/global_motion.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/optical_flow.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/motion_core.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/outlier_rejection.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/motion_stabilizing.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/frame_source.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/log.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/inpainting.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/fast_marching.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/fast_marching_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/deblurring.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/wobble_suppression.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/ring_buffer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/widgets.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/viz3d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/vizcore.hpp \
 		UI/include/paintarea.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QMouseEvent \
@@ -1595,17 +1873,21 @@ temp/moc/moc_maindeal.cpp: maindeal.h \
 		MONITOR/include/grid_height_difference.h \
 		UI/include/addlidar.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QDialog \
-		LED/include/LED_RS232_API.h \
-		LED/include/LED_serverAPI.h \
+		ALARMLED/include/LED_RS232_API.h \
+		ALARMLED/include/LED_serverAPI.h \
 		MONITOR/include/ptz.h \
 		SDK/HCInclude/incEn/HCNetSDK.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QFrame \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QTextStream \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QSettings \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsettings.h \
+		MONITOR/include/getlidarc16.h \
+		MONITOR/include/getlidarch128x1.h \
+		SDK/include/AliSmsAPIClient.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QString \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QDateTime \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdatetime.h \
 		temp/moc/moc_predefs.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/bin/moc
-	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/include/opencv4 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include maindeal.h -o temp/moc/moc_maindeal.cpp
+	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/include -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/opencv-3.4.8/include -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include maindeal.h -o temp/moc/moc_maindeal.cpp
 
 temp/moc/moc_childtitlebar.cpp: UI/include/childtitlebar.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QWidget \
@@ -1717,7 +1999,7 @@ temp/moc/moc_childtitlebar.cpp: UI/include/childtitlebar.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QMouseEvent \
 		temp/moc/moc_predefs.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/bin/moc
-	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/include/opencv4 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include UI/include/childtitlebar.h -o temp/moc/moc_childtitlebar.cpp
+	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/include -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/opencv-3.4.8/include -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include UI/include/childtitlebar.h -o temp/moc/moc_childtitlebar.cpp
 
 temp/moc/moc_maintitlebar.cpp: UI/include/maintitlebar.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QWidget \
@@ -1829,7 +2111,7 @@ temp/moc/moc_maintitlebar.cpp: UI/include/maintitlebar.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QMouseEvent \
 		temp/moc/moc_predefs.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/bin/moc
-	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/include/opencv4 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include UI/include/maintitlebar.h -o temp/moc/moc_maintitlebar.cpp
+	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/include -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/opencv-3.4.8/include -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include UI/include/maintitlebar.h -o temp/moc/moc_maintitlebar.cpp
 
 temp/moc/moc_aboutdialog.cpp: UI/include/aboutdialog.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QDialog \
@@ -1939,7 +2221,7 @@ temp/moc/moc_aboutdialog.cpp: UI/include/aboutdialog.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtouchdevice.h \
 		temp/moc/moc_predefs.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/bin/moc
-	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/include/opencv4 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include UI/include/aboutdialog.h -o temp/moc/moc_aboutdialog.cpp
+	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/include -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/opencv-3.4.8/include -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include UI/include/aboutdialog.h -o temp/moc/moc_aboutdialog.cpp
 
 temp/moc/moc_imageWidget.cpp: UI/include/imageWidget.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QWidget \
@@ -2048,9 +2330,145 @@ temp/moc/moc_imageWidget.cpp: UI/include/imageWidget.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtouchdevice.h \
 		temp/moc/moc_predefs.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/bin/moc
-	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/include/opencv4 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include UI/include/imageWidget.h -o temp/moc/moc_imageWidget.cpp
+	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/include -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/opencv-3.4.8/include -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include UI/include/imageWidget.h -o temp/moc/moc_imageWidget.cpp
 
 temp/moc/moc_paintarea.cpp: UI/include/paintarea.h \
+		/usr/opencv-3.4.8/include/opencv2/opencv.hpp \
+		/usr/opencv-3.4.8/include/opencv2/opencv_modules.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvdef.h \
+		/usr/opencv-3.4.8/include/opencv2/core/hal/interface.h \
+		/usr/opencv-3.4.8/include/opencv2/core/cv_cpu_dispatch.h \
+		/usr/opencv-3.4.8/include/opencv2/core/cv_cpu_helper.h \
+		/usr/opencv-3.4.8/include/opencv2/core/hal/msa_macros.h \
+		/usr/opencv-3.4.8/include/opencv2/core/fast_math.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/version.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/base.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvstd.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/ptr.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/neon_utils.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/vsx_utils.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/check.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/traits.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/matx.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/saturate.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/mat.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/bufferpool.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/mat.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/persistence.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/operations.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvstd.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/utility.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/core_c.h \
+		/usr/opencv-3.4.8/include/opencv2/core/types_c.h \
+		/usr/opencv-3.4.8/include/opencv2/core/optim.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/ovx.hpp \
+		/usr/opencv-3.4.8/include/opencv2/calib3d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/features2d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/miniflann.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/defines.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/config.h \
+		/usr/opencv-3.4.8/include/opencv2/core/affine.hpp \
+		/usr/opencv-3.4.8/include/opencv2/calib3d/calib3d_c.h \
+		/usr/opencv-3.4.8/include/opencv2/dnn.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dnn.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/async.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dict.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/layer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dnn.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/utils/inference_engine.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/flann_base.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/general.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/matrix.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/params.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/any.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/saving.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/nn_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/result_set.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/all_indices.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kdtree_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/dynamic_bitset.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/dist.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/heap.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/allocator.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/random.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kdtree_single_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kmeans_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/logger.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/composite_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/linear_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/hierarchical_clustering_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/lsh_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/lsh_table.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/autotuned_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/ground_truth.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/index_testing.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/timer.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/sampling.h \
+		/usr/opencv-3.4.8/include/opencv2/highgui.hpp \
+		/usr/opencv-3.4.8/include/opencv2/imgcodecs.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videoio.hpp \
+		/usr/opencv-3.4.8/include/opencv2/highgui/highgui_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc/imgproc_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc/types_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgcodecs/imgcodecs_c.h \
+		/usr/opencv-3.4.8/include/opencv2/videoio/videoio_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc.hpp \
+		/usr/opencv-3.4.8/include/opencv2/ml.hpp \
+		/usr/opencv-3.4.8/include/opencv2/ml/ml.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect/detection_based_tracker.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect/objdetect_c.h \
+		/usr/opencv-3.4.8/include/opencv2/photo.hpp \
+		/usr/opencv-3.4.8/include/opencv2/photo/photo_c.h \
+		/usr/opencv-3.4.8/include/opencv2/shape.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/emdL1.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/shape_transformer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/hist_cost.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/shape_distance.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/warpers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/warpers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda_types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/warpers_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/matchers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/motion_estimators.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/util.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/util_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/camera.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/exposure_compensate.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/seam_finders.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/blenders.hpp \
+		/usr/opencv-3.4.8/include/opencv2/superres.hpp \
+		/usr/opencv-3.4.8/include/opencv2/superres/optical_flow.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/tracking.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/background_segm.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/tracking_c.h \
+		/usr/opencv-3.4.8/include/opencv2/videostab.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/stabilizer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/global_motion.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/optical_flow.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/motion_core.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/outlier_rejection.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/motion_stabilizing.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/frame_source.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/log.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/inpainting.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/fast_marching.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/fast_marching_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/deblurring.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/wobble_suppression.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/ring_buffer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/widgets.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/viz3d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/vizcore.hpp \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qwidget.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
@@ -2202,7 +2620,7 @@ temp/moc/moc_paintarea.cpp: UI/include/paintarea.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QKeyEvent \
 		temp/moc/moc_predefs.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/bin/moc
-	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/include/opencv4 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include UI/include/paintarea.h -o temp/moc/moc_paintarea.cpp
+	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/include -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/opencv-3.4.8/include -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include UI/include/paintarea.h -o temp/moc/moc_paintarea.cpp
 
 temp/moc/moc_setroi.cpp: UI/include/setroi.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QWidget \
@@ -2336,6 +2754,142 @@ temp/moc/moc_setroi.cpp: UI/include/setroi.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qtabwidget.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qrubberband.h \
 		UI/include/paintarea.h \
+		/usr/opencv-3.4.8/include/opencv2/opencv.hpp \
+		/usr/opencv-3.4.8/include/opencv2/opencv_modules.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvdef.h \
+		/usr/opencv-3.4.8/include/opencv2/core/hal/interface.h \
+		/usr/opencv-3.4.8/include/opencv2/core/cv_cpu_dispatch.h \
+		/usr/opencv-3.4.8/include/opencv2/core/cv_cpu_helper.h \
+		/usr/opencv-3.4.8/include/opencv2/core/hal/msa_macros.h \
+		/usr/opencv-3.4.8/include/opencv2/core/fast_math.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/version.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/base.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvstd.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/ptr.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/neon_utils.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/vsx_utils.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/check.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/traits.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/matx.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/saturate.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/mat.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/bufferpool.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/mat.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/persistence.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/operations.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvstd.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/utility.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/core_c.h \
+		/usr/opencv-3.4.8/include/opencv2/core/types_c.h \
+		/usr/opencv-3.4.8/include/opencv2/core/optim.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/ovx.hpp \
+		/usr/opencv-3.4.8/include/opencv2/calib3d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/features2d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/miniflann.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/defines.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/config.h \
+		/usr/opencv-3.4.8/include/opencv2/core/affine.hpp \
+		/usr/opencv-3.4.8/include/opencv2/calib3d/calib3d_c.h \
+		/usr/opencv-3.4.8/include/opencv2/dnn.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dnn.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/async.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dict.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/layer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dnn.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/utils/inference_engine.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/flann_base.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/general.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/matrix.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/params.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/any.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/saving.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/nn_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/result_set.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/all_indices.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kdtree_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/dynamic_bitset.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/dist.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/heap.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/allocator.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/random.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kdtree_single_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kmeans_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/logger.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/composite_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/linear_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/hierarchical_clustering_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/lsh_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/lsh_table.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/autotuned_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/ground_truth.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/index_testing.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/timer.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/sampling.h \
+		/usr/opencv-3.4.8/include/opencv2/highgui.hpp \
+		/usr/opencv-3.4.8/include/opencv2/imgcodecs.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videoio.hpp \
+		/usr/opencv-3.4.8/include/opencv2/highgui/highgui_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc/imgproc_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc/types_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgcodecs/imgcodecs_c.h \
+		/usr/opencv-3.4.8/include/opencv2/videoio/videoio_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc.hpp \
+		/usr/opencv-3.4.8/include/opencv2/ml.hpp \
+		/usr/opencv-3.4.8/include/opencv2/ml/ml.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect/detection_based_tracker.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect/objdetect_c.h \
+		/usr/opencv-3.4.8/include/opencv2/photo.hpp \
+		/usr/opencv-3.4.8/include/opencv2/photo/photo_c.h \
+		/usr/opencv-3.4.8/include/opencv2/shape.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/emdL1.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/shape_transformer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/hist_cost.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/shape_distance.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/warpers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/warpers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda_types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/warpers_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/matchers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/motion_estimators.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/util.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/util_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/camera.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/exposure_compensate.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/seam_finders.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/blenders.hpp \
+		/usr/opencv-3.4.8/include/opencv2/superres.hpp \
+		/usr/opencv-3.4.8/include/opencv2/superres/optical_flow.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/tracking.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/background_segm.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/tracking_c.h \
+		/usr/opencv-3.4.8/include/opencv2/videostab.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/stabilizer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/global_motion.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/optical_flow.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/motion_core.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/outlier_rejection.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/motion_stabilizing.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/frame_source.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/log.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/inpainting.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/fast_marching.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/fast_marching_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/deblurring.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/wobble_suppression.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/ring_buffer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/widgets.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/viz3d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/vizcore.hpp \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QMouseEvent \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QPoint \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QVector \
@@ -2362,7 +2916,7 @@ temp/moc/moc_setroi.cpp: UI/include/setroi.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QKeyEvent \
 		temp/moc/moc_predefs.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/bin/moc
-	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/include/opencv4 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include UI/include/setroi.h -o temp/moc/moc_setroi.cpp
+	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/include -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/opencv-3.4.8/include -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include UI/include/setroi.h -o temp/moc/moc_setroi.cpp
 
 temp/moc/moc_smsdialog.cpp: UI/include/smsdialog.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QDialog \
@@ -2482,7 +3036,7 @@ temp/moc/moc_smsdialog.cpp: UI/include/smsdialog.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsettings.h \
 		temp/moc/moc_predefs.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/bin/moc
-	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/include/opencv4 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include UI/include/smsdialog.h -o temp/moc/moc_smsdialog.cpp
+	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/include -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/opencv-3.4.8/include -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include UI/include/smsdialog.h -o temp/moc/moc_smsdialog.cpp
 
 temp/moc/moc_addlidar.cpp: UI/include/addlidar.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QDialog \
@@ -2617,7 +3171,7 @@ temp/moc/moc_addlidar.cpp: UI/include/addlidar.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QPointF \
 		temp/moc/moc_predefs.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/bin/moc
-	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/include/opencv4 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include UI/include/addlidar.h -o temp/moc/moc_addlidar.cpp
+	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/include -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/opencv-3.4.8/include -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include UI/include/addlidar.h -o temp/moc/moc_addlidar.cpp
 
 temp/moc/moc_titlebar.cpp: UI/include/titlebar.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QObject \
@@ -2728,7 +3282,7 @@ temp/moc/moc_titlebar.cpp: UI/include/titlebar.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QMouseEvent \
 		temp/moc/moc_predefs.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/bin/moc
-	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/include/opencv4 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include UI/include/titlebar.h -o temp/moc/moc_titlebar.cpp
+	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/include -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/opencv-3.4.8/include -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include UI/include/titlebar.h -o temp/moc/moc_titlebar.cpp
 
 temp/moc/moc_algonrithm.cpp: MONITOR/include/algonrithm.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QObject \
@@ -2862,6 +3416,142 @@ temp/moc/moc_algonrithm.cpp: MONITOR/include/algonrithm.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QMetaType \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QList \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QPointF \
+		/usr/opencv-3.4.8/include/opencv2/opencv.hpp \
+		/usr/opencv-3.4.8/include/opencv2/opencv_modules.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvdef.h \
+		/usr/opencv-3.4.8/include/opencv2/core/hal/interface.h \
+		/usr/opencv-3.4.8/include/opencv2/core/cv_cpu_dispatch.h \
+		/usr/opencv-3.4.8/include/opencv2/core/cv_cpu_helper.h \
+		/usr/opencv-3.4.8/include/opencv2/core/hal/msa_macros.h \
+		/usr/opencv-3.4.8/include/opencv2/core/fast_math.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/version.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/base.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvstd.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/ptr.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/neon_utils.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/vsx_utils.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/check.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/traits.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/matx.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/saturate.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/mat.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/bufferpool.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/mat.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/persistence.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/operations.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvstd.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/utility.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/core_c.h \
+		/usr/opencv-3.4.8/include/opencv2/core/types_c.h \
+		/usr/opencv-3.4.8/include/opencv2/core/optim.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/ovx.hpp \
+		/usr/opencv-3.4.8/include/opencv2/calib3d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/features2d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/miniflann.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/defines.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/config.h \
+		/usr/opencv-3.4.8/include/opencv2/core/affine.hpp \
+		/usr/opencv-3.4.8/include/opencv2/calib3d/calib3d_c.h \
+		/usr/opencv-3.4.8/include/opencv2/dnn.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dnn.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/async.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dict.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/layer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dnn.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/utils/inference_engine.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/flann_base.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/general.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/matrix.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/params.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/any.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/saving.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/nn_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/result_set.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/all_indices.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kdtree_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/dynamic_bitset.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/dist.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/heap.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/allocator.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/random.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kdtree_single_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kmeans_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/logger.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/composite_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/linear_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/hierarchical_clustering_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/lsh_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/lsh_table.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/autotuned_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/ground_truth.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/index_testing.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/timer.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/sampling.h \
+		/usr/opencv-3.4.8/include/opencv2/highgui.hpp \
+		/usr/opencv-3.4.8/include/opencv2/imgcodecs.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videoio.hpp \
+		/usr/opencv-3.4.8/include/opencv2/highgui/highgui_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc/imgproc_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc/types_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgcodecs/imgcodecs_c.h \
+		/usr/opencv-3.4.8/include/opencv2/videoio/videoio_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc.hpp \
+		/usr/opencv-3.4.8/include/opencv2/ml.hpp \
+		/usr/opencv-3.4.8/include/opencv2/ml/ml.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect/detection_based_tracker.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect/objdetect_c.h \
+		/usr/opencv-3.4.8/include/opencv2/photo.hpp \
+		/usr/opencv-3.4.8/include/opencv2/photo/photo_c.h \
+		/usr/opencv-3.4.8/include/opencv2/shape.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/emdL1.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/shape_transformer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/hist_cost.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/shape_distance.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/warpers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/warpers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda_types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/warpers_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/matchers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/motion_estimators.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/util.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/util_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/camera.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/exposure_compensate.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/seam_finders.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/blenders.hpp \
+		/usr/opencv-3.4.8/include/opencv2/superres.hpp \
+		/usr/opencv-3.4.8/include/opencv2/superres/optical_flow.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/tracking.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/background_segm.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/tracking_c.h \
+		/usr/opencv-3.4.8/include/opencv2/videostab.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/stabilizer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/global_motion.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/optical_flow.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/motion_core.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/outlier_rejection.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/motion_stabilizing.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/frame_source.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/log.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/inpainting.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/fast_marching.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/fast_marching_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/deblurring.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/wobble_suppression.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/ring_buffer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/widgets.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/viz3d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/vizcore.hpp \
 		UI/include/paintarea.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QMouseEvent \
@@ -2887,7 +3577,7 @@ temp/moc/moc_algonrithm.cpp: MONITOR/include/algonrithm.h \
 		MONITOR/include/grid_height_difference.h \
 		temp/moc/moc_predefs.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/bin/moc
-	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/include/opencv4 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include MONITOR/include/algonrithm.h -o temp/moc/moc_algonrithm.cpp
+	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/include -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/opencv-3.4.8/include -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include MONITOR/include/algonrithm.h -o temp/moc/moc_algonrithm.cpp
 
 temp/moc/moc_getlidarc16.cpp: MONITOR/include/getlidarc16.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QObject \
@@ -3024,7 +3714,7 @@ temp/moc/moc_getlidarc16.cpp: MONITOR/include/getlidarc16.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QPointF \
 		temp/moc/moc_predefs.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/bin/moc
-	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/include/opencv4 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include MONITOR/include/getlidarc16.h -o temp/moc/moc_getlidarc16.cpp
+	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/include -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/opencv-3.4.8/include -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include MONITOR/include/getlidarc16.h -o temp/moc/moc_getlidarc16.cpp
 
 temp/moc/moc_getlidarch128x1.cpp: MONITOR/include/getlidarch128x1.h \
 		MONITOR/include/getlidarc16.h \
@@ -3162,7 +3852,7 @@ temp/moc/moc_getlidarch128x1.cpp: MONITOR/include/getlidarch128x1.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QPointF \
 		temp/moc/moc_predefs.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/bin/moc
-	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/include/opencv4 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include MONITOR/include/getlidarch128x1.h -o temp/moc/moc_getlidarch128x1.cpp
+	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/include -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/opencv-3.4.8/include -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include MONITOR/include/getlidarch128x1.h -o temp/moc/moc_getlidarch128x1.cpp
 
 temp/moc/moc_ptz.cpp: MONITOR/include/ptz.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QObject \
@@ -3281,7 +3971,7 @@ temp/moc/moc_ptz.cpp: MONITOR/include/ptz.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsettings.h \
 		temp/moc/moc_predefs.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/bin/moc
-	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/include/opencv4 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include MONITOR/include/ptz.h -o temp/moc/moc_ptz.cpp
+	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/include -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/opencv-3.4.8/include -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include MONITOR/include/ptz.h -o temp/moc/moc_ptz.cpp
 
 temp/moc/moc_lidarclustem.cpp: MONITOR/include/lidarclustem.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QObject \
@@ -3359,7 +4049,7 @@ temp/moc/moc_lidarclustem.cpp: MONITOR/include/lidarclustem.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QMutex \
 		temp/moc/moc_predefs.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/bin/moc
-	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/LED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/include/opencv4 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include MONITOR/include/lidarclustem.h -o temp/moc/moc_lidarclustem.cpp
+	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/ljy/ljy_ws/PortSecurity-master/src/temp/moc/moc_predefs.h -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/include -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/src -I/home/ljy/ljy_ws/PortSecurity-master/src/UI/forms -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/include -I/home/ljy/ljy_ws/PortSecurity-master/src/ALARMLED/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/include -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/src -I/home/ljy/ljy_ws/PortSecurity-master/src/SDK/HCInclude/incEn -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/include -I/home/ljy/ljy_ws/PortSecurity-master/src/MONITOR/src -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/include -I/home/ljy/ljy_ws/PortSecurity-master/src/GENERALTOOL/src -I/usr/include/eigen3 -I/usr/local/include/vtk-8.2 -I/usr/local/include/pcl-1.11 -I/home/ljy/ljy_ws/PortSecurity-master/src -I/usr/local/include/boost -I/usr/opencv-3.4.8/include -I/home/ljy/ljy_ws/PortSecurity-master/src -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtWidgets -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtGui -I/home/ljy/Qt5.14.2/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include MONITOR/include/lidarclustem.h -o temp/moc/moc_lidarclustem.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -3369,36 +4059,8 @@ compiler_uic_make_all: temp/ui/ui_aboutdialog.h temp/ui/ui_setroi.h temp/ui/ui_s
 compiler_uic_clean:
 	-$(DEL_FILE) temp/ui/ui_aboutdialog.h temp/ui/ui_setroi.h temp/ui/ui_smsdialog.h temp/ui/ui_addpolygon.h temp/ui/ui_maintitlebar.h temp/ui/ui_childtitlebar.h temp/ui/ui_addlidar.h temp/ui/ui_mainwindow.h
 temp/ui/ui_aboutdialog.h: UI/forms/aboutdialog.ui \
-		../../../Qt5.14.2/5.14.2/gcc_64/bin/uic
-	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/uic UI/forms/aboutdialog.ui -o temp/ui/ui_aboutdialog.h
-
-temp/ui/ui_setroi.h: UI/forms/setroi.ui \
-		../../../Qt5.14.2/5.14.2/gcc_64/bin/uic
-	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/uic UI/forms/setroi.ui -o temp/ui/ui_setroi.h
-
-temp/ui/ui_smsdialog.h: UI/forms/smsdialog.ui \
-		../../../Qt5.14.2/5.14.2/gcc_64/bin/uic
-	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/uic UI/forms/smsdialog.ui -o temp/ui/ui_smsdialog.h
-
-temp/ui/ui_addpolygon.h: UI/forms/addpolygon.ui \
-		../../../Qt5.14.2/5.14.2/gcc_64/bin/uic
-	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/uic UI/forms/addpolygon.ui -o temp/ui/ui_addpolygon.h
-
-temp/ui/ui_maintitlebar.h: UI/forms/maintitlebar.ui \
-		../../../Qt5.14.2/5.14.2/gcc_64/bin/uic
-	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/uic UI/forms/maintitlebar.ui -o temp/ui/ui_maintitlebar.h
-
-temp/ui/ui_childtitlebar.h: UI/forms/childtitlebar.ui \
-		../../../Qt5.14.2/5.14.2/gcc_64/bin/uic
-	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/uic UI/forms/childtitlebar.ui -o temp/ui/ui_childtitlebar.h
-
-temp/ui/ui_addlidar.h: UI/forms/addlidar.ui \
-		../../../Qt5.14.2/5.14.2/gcc_64/bin/uic
-	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/uic UI/forms/addlidar.ui -o temp/ui/ui_addlidar.h
-
-temp/ui/ui_mainwindow.h: mainwindow.ui \
 		../../../Qt5.14.2/5.14.2/gcc_64/bin/uic \
-		/usr/local/include/vtk-8.2/QVTKWidget.h \
+		UI/include/childtitlebar.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qwidget.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
@@ -3503,9 +4165,574 @@ temp/ui/ui_mainwindow.h: mainwindow.ui \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qfiledevice.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qvector2d.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtouchdevice.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QTimer \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qtimer.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qbasictimer.h
+		UI/include/titlebar.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QObject \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QMouseEvent
+	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/uic UI/forms/aboutdialog.ui -o temp/ui/ui_aboutdialog.h
+
+temp/ui/ui_setroi.h: UI/forms/setroi.ui \
+		../../../Qt5.14.2/5.14.2/gcc_64/bin/uic \
+		UI/include/childtitlebar.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QWidget \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qwidget.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtguiglobal.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qglobal.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qconfig-bootstrapped.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qconfig.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qtcore-config.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsystemdetection.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qprocessordetection.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcompilerdetection.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qtypeinfo.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsysinfo.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qlogging.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qflags.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qbasicatomic.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qgenericatomic.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic_cxx11.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic_msvc.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qglobalstatic.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmutex.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qnumeric.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qversiontagging.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtgui-config.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qtwidgets-config.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qwindowdefs.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobjectdefs.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qnamespace.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qwindowdefs_win.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobject.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstring.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qchar.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qbytearray.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qrefcount.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qarraydata.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringliteral.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringalgorithms.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringview.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringbuilder.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qlist.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qalgorithms.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qiterator.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qhashfunctions.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qpair.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qvector.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcontainertools_impl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qpoint.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qbytearraylist.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringlist.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qregexp.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringmatcher.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcoreevent.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qscopedpointer.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmetatype.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qvarlengtharray.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcontainerfwd.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobject_impl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmargins.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpaintdevice.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qrect.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsize.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpalette.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qcolor.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qrgb.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qrgba64.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qbrush.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qmatrix.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpolygon.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qregion.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdatastream.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qiodevice.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qline.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtransform.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpainterpath.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qimage.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpixelformat.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpixmap.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsharedpointer.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qshareddata.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qhash.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qfont.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qfontmetrics.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qfontinfo.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qsizepolicy.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qcursor.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qkeysequence.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qevent.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qvariant.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmap.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdebug.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qtextstream.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qlocale.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qset.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qurl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qurlquery.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qfile.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qfiledevice.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qvector2d.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtouchdevice.h \
+		UI/include/titlebar.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QObject \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QMouseEvent
+	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/uic UI/forms/setroi.ui -o temp/ui/ui_setroi.h
+
+temp/ui/ui_smsdialog.h: UI/forms/smsdialog.ui \
+		../../../Qt5.14.2/5.14.2/gcc_64/bin/uic \
+		UI/include/childtitlebar.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QWidget \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qwidget.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtguiglobal.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qglobal.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qconfig-bootstrapped.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qconfig.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qtcore-config.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsystemdetection.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qprocessordetection.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcompilerdetection.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qtypeinfo.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsysinfo.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qlogging.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qflags.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qbasicatomic.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qgenericatomic.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic_cxx11.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic_msvc.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qglobalstatic.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmutex.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qnumeric.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qversiontagging.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtgui-config.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qtwidgets-config.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qwindowdefs.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobjectdefs.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qnamespace.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qwindowdefs_win.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobject.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstring.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qchar.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qbytearray.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qrefcount.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qarraydata.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringliteral.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringalgorithms.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringview.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringbuilder.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qlist.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qalgorithms.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qiterator.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qhashfunctions.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qpair.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qvector.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcontainertools_impl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qpoint.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qbytearraylist.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringlist.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qregexp.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringmatcher.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcoreevent.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qscopedpointer.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmetatype.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qvarlengtharray.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcontainerfwd.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobject_impl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmargins.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpaintdevice.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qrect.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsize.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpalette.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qcolor.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qrgb.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qrgba64.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qbrush.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qmatrix.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpolygon.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qregion.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdatastream.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qiodevice.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qline.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtransform.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpainterpath.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qimage.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpixelformat.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpixmap.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsharedpointer.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qshareddata.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qhash.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qfont.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qfontmetrics.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qfontinfo.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qsizepolicy.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qcursor.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qkeysequence.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qevent.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qvariant.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmap.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdebug.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qtextstream.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qlocale.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qset.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qurl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qurlquery.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qfile.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qfiledevice.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qvector2d.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtouchdevice.h \
+		UI/include/titlebar.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QObject \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QMouseEvent
+	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/uic UI/forms/smsdialog.ui -o temp/ui/ui_smsdialog.h
+
+temp/ui/ui_addpolygon.h: UI/forms/addpolygon.ui \
+		../../../Qt5.14.2/5.14.2/gcc_64/bin/uic
+	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/uic UI/forms/addpolygon.ui -o temp/ui/ui_addpolygon.h
+
+temp/ui/ui_maintitlebar.h: UI/forms/maintitlebar.ui \
+		../../../Qt5.14.2/5.14.2/gcc_64/bin/uic
+	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/uic UI/forms/maintitlebar.ui -o temp/ui/ui_maintitlebar.h
+
+temp/ui/ui_childtitlebar.h: UI/forms/childtitlebar.ui \
+		../../../Qt5.14.2/5.14.2/gcc_64/bin/uic
+	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/uic UI/forms/childtitlebar.ui -o temp/ui/ui_childtitlebar.h
+
+temp/ui/ui_addlidar.h: UI/forms/addlidar.ui \
+		../../../Qt5.14.2/5.14.2/gcc_64/bin/uic \
+		UI/include/childtitlebar.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QWidget \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qwidget.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtguiglobal.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qglobal.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qconfig-bootstrapped.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qconfig.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qtcore-config.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsystemdetection.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qprocessordetection.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcompilerdetection.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qtypeinfo.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsysinfo.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qlogging.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qflags.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qbasicatomic.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qgenericatomic.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic_cxx11.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic_msvc.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qglobalstatic.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmutex.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qnumeric.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qversiontagging.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtgui-config.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qtwidgets-config.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qwindowdefs.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobjectdefs.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qnamespace.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qwindowdefs_win.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobject.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstring.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qchar.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qbytearray.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qrefcount.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qarraydata.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringliteral.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringalgorithms.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringview.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringbuilder.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qlist.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qalgorithms.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qiterator.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qhashfunctions.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qpair.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qvector.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcontainertools_impl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qpoint.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qbytearraylist.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringlist.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qregexp.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringmatcher.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcoreevent.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qscopedpointer.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmetatype.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qvarlengtharray.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcontainerfwd.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobject_impl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmargins.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpaintdevice.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qrect.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsize.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpalette.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qcolor.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qrgb.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qrgba64.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qbrush.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qmatrix.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpolygon.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qregion.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdatastream.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qiodevice.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qline.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtransform.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpainterpath.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qimage.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpixelformat.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpixmap.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsharedpointer.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qshareddata.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qhash.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qfont.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qfontmetrics.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qfontinfo.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qsizepolicy.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qcursor.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qkeysequence.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qevent.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qvariant.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmap.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdebug.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qtextstream.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qlocale.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qset.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qurl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qurlquery.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qfile.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qfiledevice.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qvector2d.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtouchdevice.h \
+		UI/include/titlebar.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QObject \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QMouseEvent
+	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/uic UI/forms/addlidar.ui -o temp/ui/ui_addlidar.h
+
+temp/ui/ui_mainwindow.h: mainwindow.ui \
+		../../../Qt5.14.2/5.14.2/gcc_64/bin/uic \
+		UI/include/imageWidget.h \
+		UI/include/maintitlebar.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QWidget \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qwidget.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtguiglobal.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qglobal.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qconfig-bootstrapped.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qconfig.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qtcore-config.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsystemdetection.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qprocessordetection.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcompilerdetection.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qtypeinfo.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsysinfo.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qlogging.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qflags.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qbasicatomic.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qgenericatomic.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic_cxx11.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic_msvc.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qglobalstatic.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmutex.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qnumeric.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qversiontagging.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtgui-config.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qtwidgets-config.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qwindowdefs.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobjectdefs.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qnamespace.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qwindowdefs_win.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobject.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstring.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qchar.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qbytearray.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qrefcount.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qarraydata.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringliteral.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringalgorithms.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringview.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringbuilder.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qlist.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qalgorithms.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qiterator.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qhashfunctions.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qpair.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qvector.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcontainertools_impl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qpoint.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qbytearraylist.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringlist.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qregexp.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringmatcher.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcoreevent.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qscopedpointer.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmetatype.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qvarlengtharray.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcontainerfwd.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobject_impl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmargins.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpaintdevice.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qrect.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsize.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpalette.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qcolor.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qrgb.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qrgba64.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qbrush.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qmatrix.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpolygon.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qregion.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdatastream.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qiodevice.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qline.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtransform.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpainterpath.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qimage.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpixelformat.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpixmap.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsharedpointer.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qshareddata.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qhash.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qfont.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qfontmetrics.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qfontinfo.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qsizepolicy.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qcursor.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qkeysequence.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qevent.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qvariant.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmap.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdebug.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qtextstream.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qlocale.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qset.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qurl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qurlquery.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qfile.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qfiledevice.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qvector2d.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtouchdevice.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QWidget \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qwidget.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtguiglobal.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qglobal.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qconfig-bootstrapped.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qconfig.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qtcore-config.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsystemdetection.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qprocessordetection.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcompilerdetection.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qtypeinfo.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsysinfo.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qlogging.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qflags.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qbasicatomic.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qgenericatomic.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic_cxx11.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic_msvc.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qglobalstatic.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmutex.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qnumeric.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qversiontagging.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtgui-config.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qtwidgets-config.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qwindowdefs.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobjectdefs.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qnamespace.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qwindowdefs_win.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobject.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstring.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qchar.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qbytearray.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qrefcount.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qarraydata.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringliteral.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringalgorithms.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringview.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringbuilder.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qlist.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qalgorithms.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qiterator.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qhashfunctions.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qpair.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qvector.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcontainertools_impl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qpoint.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qbytearraylist.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringlist.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qregexp.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringmatcher.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcoreevent.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qscopedpointer.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmetatype.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qvarlengtharray.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcontainerfwd.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobject_impl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmargins.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpaintdevice.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qrect.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsize.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpalette.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qcolor.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qrgb.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qrgba64.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qbrush.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qmatrix.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpolygon.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qregion.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdatastream.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qiodevice.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qline.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtransform.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpainterpath.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qimage.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpixelformat.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpixmap.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsharedpointer.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qshareddata.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qhash.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qfont.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qfontmetrics.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qfontinfo.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qsizepolicy.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qcursor.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qkeysequence.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qevent.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qvariant.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmap.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdebug.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qtextstream.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qlocale.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qset.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qurl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qurlquery.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qfile.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qfiledevice.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qvector2d.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtouchdevice.h \
+		UI/include/titlebar.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QObject \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QMouseEvent
 	/home/ljy/Qt5.14.2/5.14.2/gcc_64/bin/uic mainwindow.ui -o temp/ui/ui_mainwindow.h
 
 compiler_yacc_decl_make_all:
@@ -3657,7 +4884,7 @@ temp/obj/main.o: main.cpp mainwindow.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QMetaType \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QList \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QPointF \
-		filesystem.h \
+		GENERALTOOL/include/filesystem.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QFileDialog \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qfiledialog.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdir.h \
@@ -3668,6 +4895,142 @@ temp/obj/main.o: main.cpp mainwindow.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QMutex \
 		MONITOR/include/getlidarch128x1.h \
 		UI/include/paintarea.h \
+		/usr/opencv-3.4.8/include/opencv2/opencv.hpp \
+		/usr/opencv-3.4.8/include/opencv2/opencv_modules.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvdef.h \
+		/usr/opencv-3.4.8/include/opencv2/core/hal/interface.h \
+		/usr/opencv-3.4.8/include/opencv2/core/cv_cpu_dispatch.h \
+		/usr/opencv-3.4.8/include/opencv2/core/cv_cpu_helper.h \
+		/usr/opencv-3.4.8/include/opencv2/core/hal/msa_macros.h \
+		/usr/opencv-3.4.8/include/opencv2/core/fast_math.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/version.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/base.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvstd.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/ptr.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/neon_utils.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/vsx_utils.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/check.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/traits.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/matx.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/saturate.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/mat.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/bufferpool.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/mat.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/persistence.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/operations.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvstd.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/utility.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/core_c.h \
+		/usr/opencv-3.4.8/include/opencv2/core/types_c.h \
+		/usr/opencv-3.4.8/include/opencv2/core/optim.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/ovx.hpp \
+		/usr/opencv-3.4.8/include/opencv2/calib3d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/features2d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/miniflann.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/defines.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/config.h \
+		/usr/opencv-3.4.8/include/opencv2/core/affine.hpp \
+		/usr/opencv-3.4.8/include/opencv2/calib3d/calib3d_c.h \
+		/usr/opencv-3.4.8/include/opencv2/dnn.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dnn.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/async.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dict.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/layer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dnn.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/utils/inference_engine.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/flann_base.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/general.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/matrix.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/params.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/any.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/saving.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/nn_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/result_set.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/all_indices.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kdtree_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/dynamic_bitset.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/dist.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/heap.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/allocator.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/random.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kdtree_single_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kmeans_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/logger.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/composite_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/linear_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/hierarchical_clustering_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/lsh_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/lsh_table.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/autotuned_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/ground_truth.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/index_testing.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/timer.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/sampling.h \
+		/usr/opencv-3.4.8/include/opencv2/highgui.hpp \
+		/usr/opencv-3.4.8/include/opencv2/imgcodecs.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videoio.hpp \
+		/usr/opencv-3.4.8/include/opencv2/highgui/highgui_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc/imgproc_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc/types_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgcodecs/imgcodecs_c.h \
+		/usr/opencv-3.4.8/include/opencv2/videoio/videoio_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc.hpp \
+		/usr/opencv-3.4.8/include/opencv2/ml.hpp \
+		/usr/opencv-3.4.8/include/opencv2/ml/ml.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect/detection_based_tracker.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect/objdetect_c.h \
+		/usr/opencv-3.4.8/include/opencv2/photo.hpp \
+		/usr/opencv-3.4.8/include/opencv2/photo/photo_c.h \
+		/usr/opencv-3.4.8/include/opencv2/shape.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/emdL1.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/shape_transformer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/hist_cost.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/shape_distance.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/warpers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/warpers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda_types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/warpers_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/matchers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/motion_estimators.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/util.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/util_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/camera.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/exposure_compensate.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/seam_finders.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/blenders.hpp \
+		/usr/opencv-3.4.8/include/opencv2/superres.hpp \
+		/usr/opencv-3.4.8/include/opencv2/superres/optical_flow.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/tracking.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/background_segm.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/tracking_c.h \
+		/usr/opencv-3.4.8/include/opencv2/videostab.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/stabilizer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/global_motion.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/optical_flow.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/motion_core.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/outlier_rejection.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/motion_stabilizing.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/frame_source.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/log.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/inpainting.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/fast_marching.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/fast_marching_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/deblurring.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/wobble_suppression.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/ring_buffer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/widgets.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/viz3d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/vizcore.hpp \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QMouseEvent \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QPoint \
@@ -3714,14 +5077,14 @@ temp/obj/main.o: main.cpp mainwindow.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qactiongroup.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QMenu \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qmenu.h \
+		UI/include/aboutdialog.h \
+		maindeal.h \
+		ALARMLED/include/LED_RS232_API.h \
+		ALARMLED/include/LED_serverAPI.h \
 		SDK/include/AliSmsAPIClient.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QString \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QDateTime \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdatetime.h \
-		UI/include/aboutdialog.h \
-		maindeal.h \
-		LED/include/LED_RS232_API.h \
-		LED/include/LED_serverAPI.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QApplication \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qapplication.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcoreapplication.h \
@@ -3873,7 +5236,7 @@ temp/obj/mainwindow.o: mainwindow.cpp mainwindow.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QMetaType \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QList \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QPointF \
-		filesystem.h \
+		GENERALTOOL/include/filesystem.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QFileDialog \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qfiledialog.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdir.h \
@@ -3884,6 +5247,142 @@ temp/obj/mainwindow.o: mainwindow.cpp mainwindow.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QMutex \
 		MONITOR/include/getlidarch128x1.h \
 		UI/include/paintarea.h \
+		/usr/opencv-3.4.8/include/opencv2/opencv.hpp \
+		/usr/opencv-3.4.8/include/opencv2/opencv_modules.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvdef.h \
+		/usr/opencv-3.4.8/include/opencv2/core/hal/interface.h \
+		/usr/opencv-3.4.8/include/opencv2/core/cv_cpu_dispatch.h \
+		/usr/opencv-3.4.8/include/opencv2/core/cv_cpu_helper.h \
+		/usr/opencv-3.4.8/include/opencv2/core/hal/msa_macros.h \
+		/usr/opencv-3.4.8/include/opencv2/core/fast_math.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/version.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/base.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvstd.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/ptr.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/neon_utils.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/vsx_utils.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/check.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/traits.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/matx.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/saturate.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/mat.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/bufferpool.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/mat.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/persistence.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/operations.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvstd.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/utility.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/core_c.h \
+		/usr/opencv-3.4.8/include/opencv2/core/types_c.h \
+		/usr/opencv-3.4.8/include/opencv2/core/optim.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/ovx.hpp \
+		/usr/opencv-3.4.8/include/opencv2/calib3d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/features2d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/miniflann.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/defines.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/config.h \
+		/usr/opencv-3.4.8/include/opencv2/core/affine.hpp \
+		/usr/opencv-3.4.8/include/opencv2/calib3d/calib3d_c.h \
+		/usr/opencv-3.4.8/include/opencv2/dnn.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dnn.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/async.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dict.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/layer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dnn.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/utils/inference_engine.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/flann_base.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/general.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/matrix.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/params.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/any.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/saving.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/nn_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/result_set.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/all_indices.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kdtree_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/dynamic_bitset.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/dist.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/heap.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/allocator.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/random.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kdtree_single_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kmeans_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/logger.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/composite_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/linear_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/hierarchical_clustering_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/lsh_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/lsh_table.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/autotuned_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/ground_truth.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/index_testing.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/timer.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/sampling.h \
+		/usr/opencv-3.4.8/include/opencv2/highgui.hpp \
+		/usr/opencv-3.4.8/include/opencv2/imgcodecs.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videoio.hpp \
+		/usr/opencv-3.4.8/include/opencv2/highgui/highgui_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc/imgproc_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc/types_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgcodecs/imgcodecs_c.h \
+		/usr/opencv-3.4.8/include/opencv2/videoio/videoio_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc.hpp \
+		/usr/opencv-3.4.8/include/opencv2/ml.hpp \
+		/usr/opencv-3.4.8/include/opencv2/ml/ml.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect/detection_based_tracker.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect/objdetect_c.h \
+		/usr/opencv-3.4.8/include/opencv2/photo.hpp \
+		/usr/opencv-3.4.8/include/opencv2/photo/photo_c.h \
+		/usr/opencv-3.4.8/include/opencv2/shape.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/emdL1.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/shape_transformer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/hist_cost.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/shape_distance.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/warpers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/warpers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda_types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/warpers_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/matchers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/motion_estimators.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/util.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/util_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/camera.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/exposure_compensate.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/seam_finders.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/blenders.hpp \
+		/usr/opencv-3.4.8/include/opencv2/superres.hpp \
+		/usr/opencv-3.4.8/include/opencv2/superres/optical_flow.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/tracking.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/background_segm.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/tracking_c.h \
+		/usr/opencv-3.4.8/include/opencv2/videostab.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/stabilizer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/global_motion.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/optical_flow.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/motion_core.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/outlier_rejection.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/motion_stabilizing.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/frame_source.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/log.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/inpainting.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/fast_marching.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/fast_marching_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/deblurring.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/wobble_suppression.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/ring_buffer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/widgets.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/viz3d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/vizcore.hpp \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QMouseEvent \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QPoint \
@@ -3930,224 +5429,18 @@ temp/obj/mainwindow.o: mainwindow.cpp mainwindow.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qactiongroup.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QMenu \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qmenu.h \
+		UI/include/aboutdialog.h \
+		maindeal.h \
+		ALARMLED/include/LED_RS232_API.h \
+		ALARMLED/include/LED_serverAPI.h \
 		SDK/include/AliSmsAPIClient.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QString \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QDateTime \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdatetime.h \
-		UI/include/aboutdialog.h \
-		maindeal.h \
-		LED/include/LED_RS232_API.h \
-		LED/include/LED_serverAPI.h \
 		temp/ui/ui_mainwindow.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QVector2D \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QDir
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o temp/obj/mainwindow.o mainwindow.cpp
-
-temp/obj/filesystem.o: filesystem.cpp filesystem.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QFileDialog \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qfiledialog.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtguiglobal.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qglobal.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qconfig-bootstrapped.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qconfig.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qtcore-config.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsystemdetection.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qprocessordetection.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcompilerdetection.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qtypeinfo.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsysinfo.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qlogging.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qflags.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qbasicatomic.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic_bootstrap.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qgenericatomic.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic_cxx11.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic_msvc.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qglobalstatic.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmutex.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qnumeric.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qversiontagging.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtgui-config.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qtwidgets-config.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdir.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstring.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qchar.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qbytearray.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qrefcount.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qnamespace.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qarraydata.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringliteral.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringalgorithms.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringview.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringbuilder.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qfileinfo.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qfile.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qfiledevice.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qiodevice.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobject.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobjectdefs.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobjectdefs_impl.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qlist.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qalgorithms.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qiterator.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qhashfunctions.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qpair.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qvector.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcontainertools_impl.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qpoint.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qbytearraylist.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringlist.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qregexp.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringmatcher.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcoreevent.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qscopedpointer.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmetatype.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qvarlengtharray.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcontainerfwd.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobject_impl.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qshareddata.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qhash.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qurl.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qurlquery.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qdialog.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qwidget.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qwindowdefs.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qwindowdefs_win.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmargins.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpaintdevice.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qrect.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsize.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpalette.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qcolor.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qrgb.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qrgba64.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qbrush.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qmatrix.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpolygon.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qregion.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdatastream.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qline.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtransform.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpainterpath.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qimage.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpixelformat.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpixmap.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsharedpointer.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsharedpointer_impl.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qfont.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qfontmetrics.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qfontinfo.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qsizepolicy.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qcursor.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qkeysequence.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qevent.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qvariant.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmap.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdebug.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qtextstream.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qlocale.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qset.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcontiguouscache.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qvector2d.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtouchdevice.h \
-		common.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QTableWidgetItem \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qtablewidget.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qtableview.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qabstractitemview.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qframe.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qabstractitemmodel.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qitemselectionmodel.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qstyleoption.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qvalidator.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qregularexpression.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qicon.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qslider.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qabstractslider.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qstyle.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qtabbar.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qtabwidget.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QVariant \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QMetaType \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QList \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QPointF \
-		mainwindow.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QMainWindow \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qmainwindow.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QStyleFactory \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qstylefactory.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QSplitter \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qsplitter.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QThread \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qthread.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QButtonGroup \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qbuttongroup.h \
-		MONITOR/include/getlidarc16.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QObject \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QMutex \
-		MONITOR/include/getlidarch128x1.h \
-		UI/include/paintarea.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QWidget \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QMouseEvent \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QPoint \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QVector \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QLabel \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QCursor \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QScrollArea \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qscrollarea.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QScrollBar \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qscrollbar.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QTimer \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qtimer.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qbasictimer.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QtMath \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmath.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QPainterPath \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QMessageBox \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qmessagebox.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QKeyEvent \
-		UI/include/setroi.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QLayout \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qlayout.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qgridlayout.h \
-		UI/include/addlidar.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QDialog \
-		MONITOR/include/algonrithm.h \
-		MONITOR/include/grid_height_difference.h \
-		MONITOR/include/ptz.h \
-		SDK/HCInclude/incEn/HCNetSDK.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QFrame \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QTextStream \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QSettings \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsettings.h \
-		MONITOR/include/lidarclustem.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QDebug \
-		MONITOR/include/lidarroaddetect.h \
-		MONITOR/include/common_struct.h \
-		UI/include/smsdialog.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QAction \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qaction.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qactiongroup.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QMenu \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qmenu.h \
-		SDK/include/AliSmsAPIClient.h \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QString \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QDateTime \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdatetime.h \
-		UI/include/aboutdialog.h \
-		maindeal.h \
-		LED/include/LED_RS232_API.h \
-		LED/include/LED_serverAPI.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o temp/obj/filesystem.o filesystem.cpp
 
 temp/obj/maindeal.o: maindeal.cpp maindeal.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QDebug \
@@ -4216,6 +5509,8 @@ temp/obj/maindeal.o: maindeal.cpp maindeal.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsharedpointer.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsharedpointer_impl.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QObject \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QSettings \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsettings.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmath.h \
 		common.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QTableWidgetItem \
@@ -4281,7 +5576,7 @@ temp/obj/maindeal.o: maindeal.cpp maindeal.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QMetaType \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QList \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QPointF \
-		filesystem.h \
+		GENERALTOOL/include/filesystem.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QFileDialog \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qfiledialog.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdir.h \
@@ -4294,6 +5589,142 @@ temp/obj/maindeal.o: maindeal.cpp maindeal.h \
 		MONITOR/include/common_struct.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QMutex \
 		MONITOR/include/algonrithm.h \
+		/usr/opencv-3.4.8/include/opencv2/opencv.hpp \
+		/usr/opencv-3.4.8/include/opencv2/opencv_modules.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvdef.h \
+		/usr/opencv-3.4.8/include/opencv2/core/hal/interface.h \
+		/usr/opencv-3.4.8/include/opencv2/core/cv_cpu_dispatch.h \
+		/usr/opencv-3.4.8/include/opencv2/core/cv_cpu_helper.h \
+		/usr/opencv-3.4.8/include/opencv2/core/hal/msa_macros.h \
+		/usr/opencv-3.4.8/include/opencv2/core/fast_math.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/version.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/base.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvstd.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/ptr.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/neon_utils.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/vsx_utils.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/check.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/traits.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/matx.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/saturate.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/mat.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/bufferpool.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/mat.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/persistence.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/operations.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvstd.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/utility.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/core_c.h \
+		/usr/opencv-3.4.8/include/opencv2/core/types_c.h \
+		/usr/opencv-3.4.8/include/opencv2/core/optim.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/ovx.hpp \
+		/usr/opencv-3.4.8/include/opencv2/calib3d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/features2d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/miniflann.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/defines.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/config.h \
+		/usr/opencv-3.4.8/include/opencv2/core/affine.hpp \
+		/usr/opencv-3.4.8/include/opencv2/calib3d/calib3d_c.h \
+		/usr/opencv-3.4.8/include/opencv2/dnn.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dnn.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/async.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dict.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/layer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dnn.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/utils/inference_engine.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/flann_base.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/general.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/matrix.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/params.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/any.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/saving.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/nn_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/result_set.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/all_indices.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kdtree_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/dynamic_bitset.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/dist.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/heap.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/allocator.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/random.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kdtree_single_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kmeans_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/logger.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/composite_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/linear_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/hierarchical_clustering_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/lsh_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/lsh_table.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/autotuned_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/ground_truth.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/index_testing.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/timer.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/sampling.h \
+		/usr/opencv-3.4.8/include/opencv2/highgui.hpp \
+		/usr/opencv-3.4.8/include/opencv2/imgcodecs.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videoio.hpp \
+		/usr/opencv-3.4.8/include/opencv2/highgui/highgui_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc/imgproc_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc/types_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgcodecs/imgcodecs_c.h \
+		/usr/opencv-3.4.8/include/opencv2/videoio/videoio_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc.hpp \
+		/usr/opencv-3.4.8/include/opencv2/ml.hpp \
+		/usr/opencv-3.4.8/include/opencv2/ml/ml.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect/detection_based_tracker.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect/objdetect_c.h \
+		/usr/opencv-3.4.8/include/opencv2/photo.hpp \
+		/usr/opencv-3.4.8/include/opencv2/photo/photo_c.h \
+		/usr/opencv-3.4.8/include/opencv2/shape.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/emdL1.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/shape_transformer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/hist_cost.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/shape_distance.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/warpers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/warpers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda_types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/warpers_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/matchers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/motion_estimators.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/util.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/util_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/camera.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/exposure_compensate.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/seam_finders.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/blenders.hpp \
+		/usr/opencv-3.4.8/include/opencv2/superres.hpp \
+		/usr/opencv-3.4.8/include/opencv2/superres/optical_flow.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/tracking.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/background_segm.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/tracking_c.h \
+		/usr/opencv-3.4.8/include/opencv2/videostab.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/stabilizer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/global_motion.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/optical_flow.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/motion_core.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/outlier_rejection.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/motion_stabilizing.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/frame_source.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/log.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/inpainting.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/fast_marching.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/fast_marching_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/deblurring.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/wobble_suppression.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/ring_buffer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/widgets.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/viz3d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/vizcore.hpp \
 		UI/include/paintarea.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QMouseEvent \
@@ -4317,14 +5748,18 @@ temp/obj/maindeal.o: maindeal.cpp maindeal.h \
 		MONITOR/include/grid_height_difference.h \
 		UI/include/addlidar.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QDialog \
-		LED/include/LED_RS232_API.h \
-		LED/include/LED_serverAPI.h \
+		ALARMLED/include/LED_RS232_API.h \
+		ALARMLED/include/LED_serverAPI.h \
 		MONITOR/include/ptz.h \
 		SDK/HCInclude/incEn/HCNetSDK.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QFrame \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QTextStream \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QSettings \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsettings.h
+		MONITOR/include/getlidarc16.h \
+		MONITOR/include/getlidarch128x1.h \
+		SDK/include/AliSmsAPIClient.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QString \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QDateTime \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdatetime.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o temp/obj/maindeal.o maindeal.cpp
 
 temp/obj/aboutdialog.o: UI/src/aboutdialog.cpp UI/include/aboutdialog.h \
@@ -4707,7 +6142,7 @@ temp/obj/paintarea.o: UI/src/paintarea.cpp ../../../Qt5.14.2/5.14.2/gcc_64/inclu
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QMetaType \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QList \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QPointF \
-		filesystem.h \
+		GENERALTOOL/include/filesystem.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QFileDialog \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qfiledialog.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdir.h \
@@ -4718,6 +6153,142 @@ temp/obj/paintarea.o: UI/src/paintarea.cpp ../../../Qt5.14.2/5.14.2/gcc_64/inclu
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QMutex \
 		MONITOR/include/getlidarch128x1.h \
 		UI/include/paintarea.h \
+		/usr/opencv-3.4.8/include/opencv2/opencv.hpp \
+		/usr/opencv-3.4.8/include/opencv2/opencv_modules.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvdef.h \
+		/usr/opencv-3.4.8/include/opencv2/core/hal/interface.h \
+		/usr/opencv-3.4.8/include/opencv2/core/cv_cpu_dispatch.h \
+		/usr/opencv-3.4.8/include/opencv2/core/cv_cpu_helper.h \
+		/usr/opencv-3.4.8/include/opencv2/core/hal/msa_macros.h \
+		/usr/opencv-3.4.8/include/opencv2/core/fast_math.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/version.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/base.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvstd.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/ptr.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/neon_utils.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/vsx_utils.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/check.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/traits.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/matx.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/saturate.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/mat.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/bufferpool.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/mat.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/persistence.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/operations.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvstd.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/utility.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/core_c.h \
+		/usr/opencv-3.4.8/include/opencv2/core/types_c.h \
+		/usr/opencv-3.4.8/include/opencv2/core/optim.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/ovx.hpp \
+		/usr/opencv-3.4.8/include/opencv2/calib3d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/features2d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/miniflann.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/defines.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/config.h \
+		/usr/opencv-3.4.8/include/opencv2/core/affine.hpp \
+		/usr/opencv-3.4.8/include/opencv2/calib3d/calib3d_c.h \
+		/usr/opencv-3.4.8/include/opencv2/dnn.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dnn.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/async.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dict.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/layer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dnn.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/utils/inference_engine.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/flann_base.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/general.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/matrix.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/params.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/any.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/saving.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/nn_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/result_set.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/all_indices.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kdtree_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/dynamic_bitset.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/dist.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/heap.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/allocator.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/random.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kdtree_single_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kmeans_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/logger.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/composite_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/linear_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/hierarchical_clustering_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/lsh_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/lsh_table.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/autotuned_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/ground_truth.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/index_testing.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/timer.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/sampling.h \
+		/usr/opencv-3.4.8/include/opencv2/highgui.hpp \
+		/usr/opencv-3.4.8/include/opencv2/imgcodecs.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videoio.hpp \
+		/usr/opencv-3.4.8/include/opencv2/highgui/highgui_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc/imgproc_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc/types_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgcodecs/imgcodecs_c.h \
+		/usr/opencv-3.4.8/include/opencv2/videoio/videoio_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc.hpp \
+		/usr/opencv-3.4.8/include/opencv2/ml.hpp \
+		/usr/opencv-3.4.8/include/opencv2/ml/ml.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect/detection_based_tracker.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect/objdetect_c.h \
+		/usr/opencv-3.4.8/include/opencv2/photo.hpp \
+		/usr/opencv-3.4.8/include/opencv2/photo/photo_c.h \
+		/usr/opencv-3.4.8/include/opencv2/shape.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/emdL1.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/shape_transformer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/hist_cost.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/shape_distance.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/warpers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/warpers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda_types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/warpers_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/matchers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/motion_estimators.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/util.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/util_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/camera.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/exposure_compensate.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/seam_finders.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/blenders.hpp \
+		/usr/opencv-3.4.8/include/opencv2/superres.hpp \
+		/usr/opencv-3.4.8/include/opencv2/superres/optical_flow.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/tracking.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/background_segm.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/tracking_c.h \
+		/usr/opencv-3.4.8/include/opencv2/videostab.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/stabilizer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/global_motion.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/optical_flow.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/motion_core.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/outlier_rejection.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/motion_stabilizing.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/frame_source.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/log.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/inpainting.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/fast_marching.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/fast_marching_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/deblurring.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/wobble_suppression.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/ring_buffer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/widgets.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/viz3d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/vizcore.hpp \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QMouseEvent \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QPoint \
@@ -4763,14 +6334,14 @@ temp/obj/paintarea.o: UI/src/paintarea.cpp ../../../Qt5.14.2/5.14.2/gcc_64/inclu
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qactiongroup.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QMenu \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qmenu.h \
+		UI/include/aboutdialog.h \
+		maindeal.h \
+		ALARMLED/include/LED_RS232_API.h \
+		ALARMLED/include/LED_serverAPI.h \
 		SDK/include/AliSmsAPIClient.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QString \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QDateTime \
-		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdatetime.h \
-		UI/include/aboutdialog.h \
-		maindeal.h \
-		LED/include/LED_RS232_API.h \
-		LED/include/LED_serverAPI.h
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdatetime.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o temp/obj/paintarea.o UI/src/paintarea.cpp
 
 temp/obj/setroi.o: UI/src/setroi.cpp UI/include/setroi.h \
@@ -4905,6 +6476,142 @@ temp/obj/setroi.o: UI/src/setroi.cpp UI/include/setroi.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qtabwidget.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qrubberband.h \
 		UI/include/paintarea.h \
+		/usr/opencv-3.4.8/include/opencv2/opencv.hpp \
+		/usr/opencv-3.4.8/include/opencv2/opencv_modules.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvdef.h \
+		/usr/opencv-3.4.8/include/opencv2/core/hal/interface.h \
+		/usr/opencv-3.4.8/include/opencv2/core/cv_cpu_dispatch.h \
+		/usr/opencv-3.4.8/include/opencv2/core/cv_cpu_helper.h \
+		/usr/opencv-3.4.8/include/opencv2/core/hal/msa_macros.h \
+		/usr/opencv-3.4.8/include/opencv2/core/fast_math.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/version.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/base.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvstd.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/ptr.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/neon_utils.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/vsx_utils.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/check.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/traits.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/matx.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/saturate.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/mat.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/bufferpool.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/mat.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/persistence.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/operations.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvstd.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/utility.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/core_c.h \
+		/usr/opencv-3.4.8/include/opencv2/core/types_c.h \
+		/usr/opencv-3.4.8/include/opencv2/core/optim.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/ovx.hpp \
+		/usr/opencv-3.4.8/include/opencv2/calib3d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/features2d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/miniflann.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/defines.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/config.h \
+		/usr/opencv-3.4.8/include/opencv2/core/affine.hpp \
+		/usr/opencv-3.4.8/include/opencv2/calib3d/calib3d_c.h \
+		/usr/opencv-3.4.8/include/opencv2/dnn.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dnn.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/async.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dict.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/layer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dnn.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/utils/inference_engine.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/flann_base.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/general.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/matrix.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/params.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/any.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/saving.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/nn_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/result_set.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/all_indices.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kdtree_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/dynamic_bitset.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/dist.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/heap.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/allocator.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/random.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kdtree_single_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kmeans_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/logger.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/composite_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/linear_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/hierarchical_clustering_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/lsh_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/lsh_table.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/autotuned_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/ground_truth.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/index_testing.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/timer.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/sampling.h \
+		/usr/opencv-3.4.8/include/opencv2/highgui.hpp \
+		/usr/opencv-3.4.8/include/opencv2/imgcodecs.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videoio.hpp \
+		/usr/opencv-3.4.8/include/opencv2/highgui/highgui_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc/imgproc_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc/types_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgcodecs/imgcodecs_c.h \
+		/usr/opencv-3.4.8/include/opencv2/videoio/videoio_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc.hpp \
+		/usr/opencv-3.4.8/include/opencv2/ml.hpp \
+		/usr/opencv-3.4.8/include/opencv2/ml/ml.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect/detection_based_tracker.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect/objdetect_c.h \
+		/usr/opencv-3.4.8/include/opencv2/photo.hpp \
+		/usr/opencv-3.4.8/include/opencv2/photo/photo_c.h \
+		/usr/opencv-3.4.8/include/opencv2/shape.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/emdL1.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/shape_transformer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/hist_cost.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/shape_distance.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/warpers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/warpers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda_types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/warpers_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/matchers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/motion_estimators.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/util.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/util_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/camera.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/exposure_compensate.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/seam_finders.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/blenders.hpp \
+		/usr/opencv-3.4.8/include/opencv2/superres.hpp \
+		/usr/opencv-3.4.8/include/opencv2/superres/optical_flow.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/tracking.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/background_segm.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/tracking_c.h \
+		/usr/opencv-3.4.8/include/opencv2/videostab.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/stabilizer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/global_motion.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/optical_flow.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/motion_core.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/outlier_rejection.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/motion_stabilizing.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/frame_source.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/log.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/inpainting.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/fast_marching.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/fast_marching_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/deblurring.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/wobble_suppression.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/ring_buffer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/widgets.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/viz3d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/vizcore.hpp \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QMouseEvent \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QPoint \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QVector \
@@ -5527,10 +7234,10 @@ temp/obj/childtitlebar.o: UI/src/childtitlebar.cpp UI/include/childtitlebar.h \
 		public/Version.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o temp/obj/childtitlebar.o UI/src/childtitlebar.cpp
 
-temp/obj/LED_RS232_API.o: LED/src/LED_RS232_API.cpp LED/include/LED_RS232_API.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o temp/obj/LED_RS232_API.o LED/src/LED_RS232_API.cpp
+temp/obj/LED_RS232_API.o: ALARMLED/src/LED_RS232_API.cpp ALARMLED/include/LED_RS232_API.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o temp/obj/LED_RS232_API.o ALARMLED/src/LED_RS232_API.cpp
 
-temp/obj/LED_serverAPI.o: LED/src/LED_serverAPI.cpp LED/include/LED_serverAPI.h \
+temp/obj/LED_serverAPI.o: ALARMLED/src/LED_serverAPI.cpp ALARMLED/include/LED_serverAPI.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QDebug \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdebug.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qalgorithms.h \
@@ -5596,7 +7303,7 @@ temp/obj/LED_serverAPI.o: LED/src/LED_serverAPI.cpp LED/include/LED_serverAPI.h 
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcontiguouscache.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsharedpointer.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsharedpointer_impl.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o temp/obj/LED_serverAPI.o LED/src/LED_serverAPI.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o temp/obj/LED_serverAPI.o ALARMLED/src/LED_serverAPI.cpp
 
 temp/obj/AliSmsAPIClient.o: SDK/src/AliSmsAPIClient.cpp SDK/include/AliSmsAPIClient.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QString \
@@ -5781,6 +7488,142 @@ temp/obj/algonrithm.o: MONITOR/src/algonrithm.cpp MONITOR/include/algonrithm.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QMetaType \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QList \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QPointF \
+		/usr/opencv-3.4.8/include/opencv2/opencv.hpp \
+		/usr/opencv-3.4.8/include/opencv2/opencv_modules.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvdef.h \
+		/usr/opencv-3.4.8/include/opencv2/core/hal/interface.h \
+		/usr/opencv-3.4.8/include/opencv2/core/cv_cpu_dispatch.h \
+		/usr/opencv-3.4.8/include/opencv2/core/cv_cpu_helper.h \
+		/usr/opencv-3.4.8/include/opencv2/core/hal/msa_macros.h \
+		/usr/opencv-3.4.8/include/opencv2/core/fast_math.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/version.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/base.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvstd.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/ptr.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/neon_utils.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/vsx_utils.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/check.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/traits.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/matx.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/saturate.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/mat.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/bufferpool.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/mat.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/persistence.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/operations.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvstd.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/utility.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/core_c.h \
+		/usr/opencv-3.4.8/include/opencv2/core/types_c.h \
+		/usr/opencv-3.4.8/include/opencv2/core/optim.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/ovx.hpp \
+		/usr/opencv-3.4.8/include/opencv2/calib3d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/features2d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/miniflann.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/defines.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/config.h \
+		/usr/opencv-3.4.8/include/opencv2/core/affine.hpp \
+		/usr/opencv-3.4.8/include/opencv2/calib3d/calib3d_c.h \
+		/usr/opencv-3.4.8/include/opencv2/dnn.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dnn.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/async.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dict.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/layer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dnn.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/utils/inference_engine.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/flann_base.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/general.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/matrix.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/params.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/any.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/saving.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/nn_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/result_set.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/all_indices.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kdtree_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/dynamic_bitset.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/dist.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/heap.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/allocator.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/random.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kdtree_single_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kmeans_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/logger.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/composite_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/linear_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/hierarchical_clustering_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/lsh_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/lsh_table.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/autotuned_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/ground_truth.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/index_testing.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/timer.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/sampling.h \
+		/usr/opencv-3.4.8/include/opencv2/highgui.hpp \
+		/usr/opencv-3.4.8/include/opencv2/imgcodecs.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videoio.hpp \
+		/usr/opencv-3.4.8/include/opencv2/highgui/highgui_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc/imgproc_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc/types_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgcodecs/imgcodecs_c.h \
+		/usr/opencv-3.4.8/include/opencv2/videoio/videoio_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc.hpp \
+		/usr/opencv-3.4.8/include/opencv2/ml.hpp \
+		/usr/opencv-3.4.8/include/opencv2/ml/ml.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect/detection_based_tracker.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect/objdetect_c.h \
+		/usr/opencv-3.4.8/include/opencv2/photo.hpp \
+		/usr/opencv-3.4.8/include/opencv2/photo/photo_c.h \
+		/usr/opencv-3.4.8/include/opencv2/shape.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/emdL1.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/shape_transformer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/hist_cost.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/shape_distance.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/warpers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/warpers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda_types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/warpers_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/matchers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/motion_estimators.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/util.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/util_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/camera.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/exposure_compensate.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/seam_finders.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/blenders.hpp \
+		/usr/opencv-3.4.8/include/opencv2/superres.hpp \
+		/usr/opencv-3.4.8/include/opencv2/superres/optical_flow.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/tracking.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/background_segm.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/tracking_c.h \
+		/usr/opencv-3.4.8/include/opencv2/videostab.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/stabilizer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/global_motion.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/optical_flow.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/motion_core.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/outlier_rejection.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/motion_stabilizing.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/frame_source.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/log.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/inpainting.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/fast_marching.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/fast_marching_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/deblurring.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/wobble_suppression.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/ring_buffer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/widgets.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/viz3d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/vizcore.hpp \
 		UI/include/paintarea.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QMouseEvent \
@@ -6348,6 +8191,348 @@ temp/obj/lidarroaddetect.o: MONITOR/src/lidarroaddetect.cpp MONITOR/include/lida
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsharedpointer_impl.h \
 		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QMetaType
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o temp/obj/lidarroaddetect.o MONITOR/src/lidarroaddetect.cpp
+
+temp/obj/filesystem.o: GENERALTOOL/src/filesystem.cpp GENERALTOOL/include/filesystem.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QFileDialog \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qfiledialog.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtguiglobal.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qglobal.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qconfig-bootstrapped.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qconfig.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qtcore-config.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsystemdetection.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qprocessordetection.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcompilerdetection.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qtypeinfo.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsysinfo.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qlogging.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qflags.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qbasicatomic.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qgenericatomic.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic_cxx11.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qatomic_msvc.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qglobalstatic.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmutex.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qnumeric.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qversiontagging.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtgui-config.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qtwidgets-config.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdir.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstring.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qchar.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qbytearray.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qrefcount.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qnamespace.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qarraydata.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringliteral.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringalgorithms.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringview.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringbuilder.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qfileinfo.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qfile.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qfiledevice.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qiodevice.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobject.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobjectdefs.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qlist.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qalgorithms.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qiterator.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qhashfunctions.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qpair.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qvector.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcontainertools_impl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qpoint.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qbytearraylist.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringlist.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qregexp.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qstringmatcher.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcoreevent.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qscopedpointer.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmetatype.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qvarlengtharray.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcontainerfwd.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qobject_impl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qshareddata.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qhash.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qurl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qurlquery.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qdialog.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qwidget.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qwindowdefs.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qwindowdefs_win.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmargins.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpaintdevice.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qrect.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsize.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpalette.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qcolor.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qrgb.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qrgba64.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qbrush.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qmatrix.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpolygon.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qregion.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdatastream.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qline.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtransform.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpainterpath.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qimage.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpixelformat.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qpixmap.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsharedpointer.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qfont.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qfontmetrics.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qfontinfo.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qsizepolicy.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qcursor.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qkeysequence.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qevent.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qvariant.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmap.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdebug.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qtextstream.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qlocale.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qset.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qvector2d.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qtouchdevice.h \
+		common.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QTableWidgetItem \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qtablewidget.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qtableview.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qabstractitemview.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qframe.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qabstractitemmodel.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qitemselectionmodel.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qstyleoption.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qabstractspinbox.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qvalidator.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qregularexpression.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/qicon.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qslider.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qabstractslider.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qstyle.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qtabbar.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qrubberband.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QVariant \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QMetaType \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QList \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QPointF \
+		mainwindow.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QMainWindow \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QStyleFactory \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qstylefactory.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QSplitter \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qsplitter.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QThread \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qthread.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QButtonGroup \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qbuttongroup.h \
+		MONITOR/include/getlidarc16.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QObject \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QMutex \
+		MONITOR/include/getlidarch128x1.h \
+		UI/include/paintarea.h \
+		/usr/opencv-3.4.8/include/opencv2/opencv.hpp \
+		/usr/opencv-3.4.8/include/opencv2/opencv_modules.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvdef.h \
+		/usr/opencv-3.4.8/include/opencv2/core/hal/interface.h \
+		/usr/opencv-3.4.8/include/opencv2/core/cv_cpu_dispatch.h \
+		/usr/opencv-3.4.8/include/opencv2/core/cv_cpu_helper.h \
+		/usr/opencv-3.4.8/include/opencv2/core/hal/msa_macros.h \
+		/usr/opencv-3.4.8/include/opencv2/core/fast_math.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/version.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/base.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvstd.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/ptr.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/neon_utils.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/vsx_utils.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/check.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/traits.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/matx.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/saturate.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/mat.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/bufferpool.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/mat.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/persistence.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/operations.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cvstd.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/utility.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/core_c.h \
+		/usr/opencv-3.4.8/include/opencv2/core/types_c.h \
+		/usr/opencv-3.4.8/include/opencv2/core/optim.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/ovx.hpp \
+		/usr/opencv-3.4.8/include/opencv2/calib3d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/features2d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/miniflann.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/defines.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/config.h \
+		/usr/opencv-3.4.8/include/opencv2/core/affine.hpp \
+		/usr/opencv-3.4.8/include/opencv2/calib3d/calib3d_c.h \
+		/usr/opencv-3.4.8/include/opencv2/dnn.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dnn.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/async.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dict.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/layer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/dnn.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/dnn/utils/inference_engine.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/flann_base.hpp \
+		/usr/opencv-3.4.8/include/opencv2/flann/general.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/matrix.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/params.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/any.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/saving.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/nn_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/result_set.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/all_indices.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kdtree_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/dynamic_bitset.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/dist.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/heap.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/allocator.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/random.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kdtree_single_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/kmeans_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/logger.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/composite_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/linear_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/hierarchical_clustering_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/lsh_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/lsh_table.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/autotuned_index.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/ground_truth.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/index_testing.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/timer.h \
+		/usr/opencv-3.4.8/include/opencv2/flann/sampling.h \
+		/usr/opencv-3.4.8/include/opencv2/highgui.hpp \
+		/usr/opencv-3.4.8/include/opencv2/imgcodecs.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videoio.hpp \
+		/usr/opencv-3.4.8/include/opencv2/highgui/highgui_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc/imgproc_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc/types_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgcodecs/imgcodecs_c.h \
+		/usr/opencv-3.4.8/include/opencv2/videoio/videoio_c.h \
+		/usr/opencv-3.4.8/include/opencv2/imgproc.hpp \
+		/usr/opencv-3.4.8/include/opencv2/ml.hpp \
+		/usr/opencv-3.4.8/include/opencv2/ml/ml.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect/detection_based_tracker.hpp \
+		/usr/opencv-3.4.8/include/opencv2/objdetect/objdetect_c.h \
+		/usr/opencv-3.4.8/include/opencv2/photo.hpp \
+		/usr/opencv-3.4.8/include/opencv2/photo/photo_c.h \
+		/usr/opencv-3.4.8/include/opencv2/shape.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/emdL1.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/shape_transformer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/hist_cost.hpp \
+		/usr/opencv-3.4.8/include/opencv2/shape/shape_distance.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/warpers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/warpers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda_types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/core/cuda.inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/warpers_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/matchers.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/motion_estimators.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/util.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/util_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/camera.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/exposure_compensate.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/seam_finders.hpp \
+		/usr/opencv-3.4.8/include/opencv2/stitching/detail/blenders.hpp \
+		/usr/opencv-3.4.8/include/opencv2/superres.hpp \
+		/usr/opencv-3.4.8/include/opencv2/superres/optical_flow.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/tracking.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/background_segm.hpp \
+		/usr/opencv-3.4.8/include/opencv2/video/tracking_c.h \
+		/usr/opencv-3.4.8/include/opencv2/videostab.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/stabilizer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/global_motion.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/optical_flow.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/motion_core.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/outlier_rejection.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/motion_stabilizing.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/frame_source.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/log.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/inpainting.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/fast_marching.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/fast_marching_inl.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/deblurring.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/wobble_suppression.hpp \
+		/usr/opencv-3.4.8/include/opencv2/videostab/ring_buffer.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/types.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/widgets.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/viz3d.hpp \
+		/usr/opencv-3.4.8/include/opencv2/viz/vizcore.hpp \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QWidget \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QMouseEvent \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QPoint \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QVector \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QLabel \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qlabel.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QCursor \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QScrollArea \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qscrollarea.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QScrollBar \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qscrollbar.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QTimer \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qtimer.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qbasictimer.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QtMath \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qmath.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QPainterPath \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QMessageBox \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qmessagebox.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtGui/QKeyEvent \
+		UI/include/setroi.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QLayout \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qlayout.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qlayoutitem.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qboxlayout.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qgridlayout.h \
+		UI/include/addlidar.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QDialog \
+		MONITOR/include/algonrithm.h \
+		MONITOR/include/grid_height_difference.h \
+		MONITOR/include/ptz.h \
+		SDK/HCInclude/incEn/HCNetSDK.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QFrame \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QTextStream \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QSettings \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qsettings.h \
+		MONITOR/include/lidarclustem.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QDebug \
+		MONITOR/include/lidarroaddetect.h \
+		MONITOR/include/common_struct.h \
+		UI/include/smsdialog.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QAction \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qaction.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qactiongroup.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/QMenu \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtWidgets/qmenu.h \
+		UI/include/aboutdialog.h \
+		maindeal.h \
+		ALARMLED/include/LED_RS232_API.h \
+		ALARMLED/include/LED_serverAPI.h \
+		SDK/include/AliSmsAPIClient.h \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QString \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/QDateTime \
+		../../../Qt5.14.2/5.14.2/gcc_64/include/QtCore/qdatetime.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o temp/obj/filesystem.o GENERALTOOL/src/filesystem.cpp
 
 temp/obj/qrc_image.o: temp/rcc/qrc_image.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o temp/obj/qrc_image.o temp/rcc/qrc_image.cpp

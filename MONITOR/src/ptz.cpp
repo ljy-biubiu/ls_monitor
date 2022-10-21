@@ -258,7 +258,6 @@ void PTZ::FollowTarget(float Angle,float Dist)//追踪目标
         currentnum = num;
     }
 
-
 }
 
 void PTZ::run()

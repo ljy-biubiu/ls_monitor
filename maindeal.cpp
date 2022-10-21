@@ -15,6 +15,12 @@ void Maindeal::ReadDevice()
 {
     QSettings config("device.ini",QSettings::IniFormat);
 
+    this->getPtz()->dist = config.value(QString("preset/Dis")).toFloat();
+    this->getPtz()->ang = config.value(QString("preset/Ang")).toFloat();
+
+    addidar_->data.setDis =  this->getPtz()->dist;
+    addidar_->data.setAng = this->getPtz()->ang;
+
     this->getPtz()->cam_IP = config.value(QString("camera/IP")).toString();
     this->getPtz()->cam_ID = config.value(QString("camera/ID")).toString();
     this->getPtz()->cam_Pass = config.value(QString("camera/Pass")).toString();
@@ -22,8 +28,6 @@ void Maindeal::ReadDevice()
     //    qDebug()<<"cam_IP"<<config.value(QStringLiteral("camera/IP")).toFloat();
     //    qDebug()<<"data.pos_x"<<config.value(QStringLiteral("Lidar/Pos_X")).toFloat();
 
-    this->getPtz()->dist = config.value(QString("preset/Dis")).toFloat();
-    this->getPtz()->ang = config.value(QString("preset/Ang")).toFloat();
 
 }
 
@@ -49,10 +53,18 @@ void Maindeal::initObject()
         Clu_cloud[i].reset(new pcl::PointCloud<pcl::PointXYZRGB>);
     }
     allcloud.reset(new pcl::PointCloud<pcl::PointXYZRGB>);
-    viewer.reset (new pcl::visualization::PCLVisualizer ("viewer", false));
+    //viewer.reset (new pcl::visualization::PCLVisualizer ("viewer", false));
     lidarClustem = new LidarClustem;
     algonrithm =new Algonrithm(addidar_->data.resolution,addidar_->data.difference_threshold);
     m_ptz = new PTZ();
+}
+
+
+void Maindeal::initViewer(vtkSmartPointer<vtkRenderer> renderer2,
+                vtkSmartPointer<vtkGenericOpenGLRenderWindow> renderWindow2)
+{
+    this->viewer.reset(new pcl::visualization::PCLVisualizer(renderer2, renderWindow2, "viewer", false));
+//    this->viewer.reset(new pcl::visualization::PCLVisualizer("viewer", false));
 }
 
 void Maindeal::initAlarmLed()
@@ -67,9 +79,6 @@ void Maindeal::initAlarmLed()
 
 void Maindeal::initLidarType()
 {
-    qDebug()<<"CH128X1:"<<addidar_->data.lidarModel;
-    qDebug()<<"CH128X1:"<<addidar_->data.lidarModel;
-    qDebug()<<"CH128X1:"<<addidar_->data.lidarModel;
 
     if("CH128X1" == addidar_->data.lidarModel)
     {

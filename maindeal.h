@@ -38,6 +38,11 @@
 #include <pcl/visualization/common/common.h>
 #include <pcl/visualization/point_cloud_geometry_handlers.h>
 
+// Visualization Toolkit (VTK)
+#include <vtkRenderWindow.h>
+#include <QVTKOpenGLNativeWidget.h>
+#include "vtkGenericOpenGLRenderWindow.h"
+
 
 Q_DECLARE_METATYPE(pcl::PointCloud<pcl::PointXYZRGB>::Ptr);
 
@@ -65,6 +70,10 @@ public:
     PTZ* getPtz();
     FileSystem* getFs();
     AliSmsAPIClient* getAliSms();
+
+    void initViewer(vtkSmartPointer<vtkRenderer> renderer2,
+                    vtkSmartPointer<vtkGenericOpenGLRenderWindow> renderWindow2);
+
 
     int alarm_flag;
     int cruise_flag;

@@ -17,6 +17,7 @@
 #include <iostream>
 
 
+
 int j;
 int lastSize;
 // TODO:WUZHENFENG20220406
@@ -70,11 +71,48 @@ void MainWindow::initParam()
 
 void MainWindow::initPointCShow()
 {
-    ui->qvtkWidget->SetRenderWindow(this->maindeal->getViewr()->getRenderWindow());
-    this->maindeal->getViewr()->setupInteractor(ui->qvtkWidget->GetInteractor(), ui->qvtkWidget->GetRenderWindow());
-    ui->qvtkWidget->update();
+
+    //    auto renderer2 = vtkSmartPointer<vtkRenderer>::New();
+    //    auto renderWindow2 = vtkSmartPointer<vtkGenericOpenGLRenderWindow>::New();
+    //    renderWindow2->AddRenderer(renderer2);
+    //this->maindeal->getViewr().reset(new pcl::visualization::PCLVisualizer(renderer2, renderWindow2, "viewer", false));
+
+    //    qvtkOpenglNativeWidget->SetRenderWindow(this->maindeal->getViewr()->getRenderWindow());                       //将数据转至pclviewer 数据 转到vtk来渲染
+    //    this->maindeal->getViewr()->setupInteractor(qvtkOpenglNativeWidget->GetInteractor(),qvtkOpenglNativeWidget->GetRenderWindow());
+
+
+    //    qvtkOpenglNativeWidget->SetRenderWindow(this->maindeal->getViewr()->getRenderWindow());
+    //    this->maindeal->getViewr()->setupInteractor(qvtkOpenglNativeWidget->GetInteractor(), qvtkOpenglNativeWidget->GetRenderWindow());
+    //    qvtkOpenglNativeWidget->update();
+    //    this->maindeal->getViewr()->addCoordinateSystem(1.0);
+    //    this->maindeal->getViewr()->initCameraParameters();
+
+
+
+    qvtkOpenglNativeWidget = new QVTKOpenGLNativeWidget();
+
+    auto renderer2 = vtkSmartPointer<vtkRenderer>::New();
+    auto renderWindow2 = vtkSmartPointer<vtkGenericOpenGLRenderWindow>::New();
+    renderWindow2->AddRenderer(renderer2);
+    this->maindeal->initViewer(renderer2,renderWindow2);
+
+    //QWidget *myWidget = new QWidget();
+    //qvtkOpenglNativeWidget->show();
+
+    ui->verticalLayout_7->addWidget(qvtkOpenglNativeWidget);
+
+    this->maindeal->getViewr().reset(new pcl::visualization::PCLVisualizer(renderer2, renderWindow2, "viewer", false));
+    qvtkOpenglNativeWidget->SetRenderWindow(this->maindeal->getViewr()->getRenderWindow());
+    this->maindeal->getViewr()->setupInteractor(qvtkOpenglNativeWidget->GetInteractor(), qvtkOpenglNativeWidget->GetRenderWindow());
+
+    //qvtkOpenglNativeWidget->setUpdateBehavior(QOpenGLWidget::NoPartialUpdate);
+
+    qvtkOpenglNativeWidget->update();
     this->maindeal->getViewr()->addCoordinateSystem(1.0);
     this->maindeal->getViewr()->initCameraParameters();
+
+
+
 }
 
 void MainWindow::initCameraShow()
@@ -354,7 +392,7 @@ void MainWindow::slot_view_Cluster_group(int id)
     else if(id == 1)
     {
         this->maindeal->getViewr()->removeAllShapes();
-        ui->qvtkWidget->update();
+        qvtkOpenglNativeWidget->update();
         this->maindeal->ClustemSwitch = false;
         LEDContrlAPI(0);
         LEDContrlAPI_IP(addlidar->data.ledIp.c_str(),0);
@@ -495,7 +533,8 @@ void MainWindow::get_lidarC16(pcl::PointCloud<pcl::PointXYZRGB>::Ptr ptr)
         this->maindeal->getViewr()->addPointCloud(ptr,name);
         this->maindeal->getViewr()->updatePointCloud(ptr,name);
     }
-    ui->qvtkWidget->update();
+    this->maindeal->getViewr()->getRenderWindow()->GetInteractor()->Render();
+    qvtkOpenglNativeWidget->update();
 
 }
 
@@ -524,7 +563,9 @@ void MainWindow::get_CH128X1(QVariant Ptr)
         this->maindeal->getViewr()->addPointCloud(ptr,name);
         this->maindeal->getViewr()->updatePointCloud(ptr,name);
     }
-    ui->qvtkWidget->update();
+    //qvtkOpenglNativeWidget->enableHiDPI
+    this->maindeal->getViewr()->getRenderWindow()->GetInteractor()->Render();
+    qvtkOpenglNativeWidget->update();
 }
 
 /*****************************************************************************
@@ -540,7 +581,7 @@ void MainWindow::showClustem_Obj(QVariant DataVar)
 
     float minx = 999.0;
     int id = -1;
-    ui->qvtkWidget->update();
+    qvtkOpenglNativeWidget->update();
 
     for(int i = 0;i <  lastSize ; i++)
     {
@@ -627,7 +668,7 @@ void MainWindow::showClustem_Obj(QVariant DataVar)
     {
         std::string ball =  QString("ball%1").arg(i).toStdString();
         this->maindeal->getViewr()->removePointCloud(ball);
-        ui->qvtkWidget->update();
+        qvtkOpenglNativeWidget->update();
     }
 
     for (int i = 0; i < Cl_obj.Obj->size(); i++)
@@ -680,7 +721,7 @@ void MainWindow::showClustem_Obj(QVariant DataVar)
             id = i;
         }
     }
-    ui->qvtkWidget->update();
+    qvtkOpenglNativeWidget->update();
     lastSize = Cl_obj.Obj->size();
 
     if ( id > -1 )
@@ -797,7 +838,7 @@ void MainWindow::drawArea()
                 sprintf(buffer,"2Darea_%d_%d",index,i);
                 std::string name =buffer;
                 this->maindeal->getViewr()->addLine<pcl::PointXYZRGB> (paintarea->Area2d_point[index][i],paintarea->Area2d_point[index][i+1],255,0,0,name);
-                ui->qvtkWidget->update();
+                qvtkOpenglNativeWidget->update();
             }
         }
     }
@@ -805,7 +846,7 @@ void MainWindow::drawArea()
     {
 
     }
-    ui->qvtkWidget->update();
+    qvtkOpenglNativeWidget->update();
 }
 
 
@@ -885,7 +926,7 @@ void MainWindow::ListtoConvex()
 
             std::string name =buffer;
             this->maindeal->getViewr()->addLine<pcl::PointXYZRGB> (paintarea->Area2d_point[index][i],paintarea->Area2d_point[index][i+1],r,g,b,name);
-            ui->qvtkWidget->update();
+            qvtkOpenglNativeWidget->update();
         }
 
     }
@@ -986,8 +1027,6 @@ void MainWindow::ReadDevice()
     saveDataStatus = config.value(QString("other/SaveDataStatus")).toInt();
     inAalarmLampStatus = config.value(QString("other/InAalarmLampStatus")).toInt();
     outAalarmLampStatus = config.value(QString("other/OutAalarmLampStatus")).toInt();
-    addlidar->data.setDis =  this->maindeal->getPtz()->dist;
-    addlidar->data.setAng = this->maindeal->getPtz()->ang;
     addlidar->data.setXAngle = XAngle;
     addlidar->data.setYAngle = YAngle;
     addlidar->data.setBase_X = Base_X;
@@ -1143,7 +1182,7 @@ void MainWindow::on_toolButton_actionOpengrid_clicked()
         this->maindeal->getViewr()->removeAllShapes();
 
 
-        ui->qvtkWidget->update();
+        qvtkOpenglNativeWidget->update();
     }
     else if (isShow == false)
     {
@@ -1164,7 +1203,7 @@ void MainWindow::on_toolButton_actionOpengrid_clicked()
         this->maindeal->getViewr()->setShapeRenderingProperties(1, 0.4, "Lineleft");
         this->maindeal->getViewr()->addLine(pcl::PointXYZ(0,0,0), pcl::PointXYZ(200,115,0), 150, 150, 150, "Lineright" );
         this->maindeal->getViewr()->setShapeRenderingProperties(1, 0.4, "Lineright");
-        ui->qvtkWidget->update();
+        qvtkOpenglNativeWidget->update();
     }
 }
 
