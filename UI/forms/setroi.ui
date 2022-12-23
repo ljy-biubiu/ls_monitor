@@ -51,13 +51,6 @@
       </widget>
      </item>
      <item>
-      <widget class="Line" name="line">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,4">
        <item>
         <layout class="QVBoxLayout" name="verticalLayout" stretch="2,1,2">
@@ -145,23 +138,6 @@
             <property name="bottomMargin">
              <number>0</number>
             </property>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_2">
-              <property name="text">
-               <string>障碍物存在时间</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QLineEdit" name="lineEdit_times"/>
-            </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="label_4">
-              <property name="text">
-               <string>防区高度最大值（单位：m）</string>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="1">
              <widget class="QComboBox" name="comboBox">
               <item>
@@ -181,6 +157,23 @@
               </item>
              </widget>
             </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>区域选择</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>防区高度最大值（单位：m）</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="lineEdit_times"/>
+            </item>
             <item row="2" column="0">
              <widget class="QLabel" name="label_3">
               <property name="text">
@@ -191,13 +184,27 @@
             <item row="3" column="1">
              <widget class="QLineEdit" name="lineEdit_Area_height_max"/>
             </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>障碍物存在时间</string>
+              </property>
+             </widget>
+            </item>
             <item row="2" column="1">
              <widget class="QLineEdit" name="lineEdit_Area_height_min"/>
             </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="label">
+            <item row="4" column="1">
+             <widget class="QLineEdit" name="lineEdit">
               <property name="text">
-               <string>区域选择</string>
+               <string>400</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_5">
+              <property name="text">
+               <string>防区半径（单位：m）</string>
               </property>
              </widget>
             </item>
@@ -230,6 +237,13 @@
         <layout class="QHBoxLayout" name="horizontalLayout"/>
        </item>
       </layout>
+     </item>
+     <item>
+      <widget class="Line" name="line">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

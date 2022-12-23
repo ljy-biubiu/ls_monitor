@@ -6,7 +6,7 @@
  * ***************************************/
 #include "childtitlebar.h"
 #include "ui_childtitlebar.h"
-#include "public/Version.h"
+#include "Version.h"
 ChildTitleBar::ChildTitleBar(QWidget *parent) :
     TitleBar(parent),
     ui(new Ui::ChildTitleBar)

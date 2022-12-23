@@ -3,6 +3,8 @@
 
 #include <QDialog>
 #include "common.h"
+#include "myparams.h"
+#include <QScrollArea>
 
 namespace Ui {
 class AddLidar;
@@ -16,17 +18,18 @@ public:
     explicit AddLidar(QWidget *parent = 0);
     ~AddLidar();
     void initcombox(QList<int>&items);
-    void ShowData();
-     SetData data;
+    void ShowData(TotalParams &msg);
+    SetData data;
 private slots:
     void on_btn_sure_clicked();
-
     void on_btn_no_clicked();
 
 signals:
-    void SendSet(SetData data);
+    void SendSet(TotalParams);
 private:
     Ui::AddLidar *ui;
+    QScrollArea* scrollArea;
+    TotalParams msg_;
 };
 
 #endif // ADDLIDAR_H

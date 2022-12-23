@@ -42,10 +42,12 @@ public slots:
 
 signals:
 
-   void sigalareapaint();
-   void sigaltablepaint();
-//   void sigalareaindex(int index);
+    void sigalareasize(int);
+    void sigalareapaint();
+    void sigaltablepaint();
+    //   void sigalareaindex(int index);
     void sigChangeArea_index(int);
+    void sigSaveAreaData();
 
 
 private slots:
@@ -58,6 +60,10 @@ private slots:
     void on_lineEdit_Area_height_max_textChanged(const QString &arg1);
 
     void on_lineEdit_Area_height_min_textChanged(const QString &arg1);
+
+    void on_lineEdit_textChanged(const QString &arg1);
+
+    void on_pushButton_comfire_clicked();
 
 private:
     Ui::SetROI *ui;

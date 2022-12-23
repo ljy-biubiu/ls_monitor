@@ -6,7 +6,7 @@
  * ***************************************/
 #include "maintitlebar.h"
 #include "ui_maintitlebar.h"
-#include "public/Version.h"
+#include "Version.h"
 
 MainTitleBar::MainTitleBar(QWidget *parent) :
     TitleBar(parent),

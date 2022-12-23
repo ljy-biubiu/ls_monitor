@@ -16,7 +16,7 @@ SMSDialog::SMSDialog(QWidget *parent) :
     ui->lineEdit->setValidator(new QRegExpValidator(regExp, this));
     ui->treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);//设置支持右键菜单
     connect(ui->treeWidget,&QTreeWidget::customContextMenuRequested,this,&SMSDialog::doCustomContextMenuRequested);
-    QSettings settings(QStringLiteral("./device.ini"),QSettings::IniFormat);
+    QSettings settings(QStringLiteral("./setting/device.ini"),QSettings::IniFormat);
     settings.beginGroup(QStringLiteral("SmsNumber"));
     QStringList keys = settings.allKeys();
     for (int i = 0; i < keys.size();i++)
@@ -81,7 +81,7 @@ void SMSDialog::DeleteItemFunction()
     }
     else
     {
-        QSettings settings(QStringLiteral("./device.ini"),QSettings::IniFormat);
+        QSettings settings(QStringLiteral("./setting/device.ini"),QSettings::IniFormat);
         settings.beginGroup(QStringLiteral("SmsNumber"));
         settings.remove(QString("number_%1").arg(currentItem->text(0).toInt()));
         settings.endGroup();
@@ -126,7 +126,7 @@ void SMSDialog::on_pushButton_clicked()
               return;
           }
     }
-    QSettings settings(QStringLiteral("./device.ini"),QSettings::IniFormat);
+    QSettings settings(QStringLiteral("./setting/device.ini"),QSettings::IniFormat);
     settings.beginGroup(QStringLiteral("SmsNumber"));
     QTreeWidgetItem *item = new QTreeWidgetItem;
     item->setFont(0,QFont("KaiTi",14));
@@ -153,7 +153,7 @@ void SMSDialog::on_pushButton_time_clicked()
 {
     smsTimeInterval = ui->spinBox->value();
     g_distance = ui->spinBox_dist->value();
-    QSettings settings(QStringLiteral("./device.ini"),QSettings::IniFormat);
+    QSettings settings(QStringLiteral("./setting/device.ini"),QSettings::IniFormat);
     settings.beginGroup(QStringLiteral("SmsTimeInterval"));
     settings.setValue(QStringLiteral("Time"),smsTimeInterval);
     settings.setValue(QStringLiteral("Distance"),g_distance);

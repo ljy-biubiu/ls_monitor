@@ -4,7 +4,7 @@
 #include <QUrl>
 #include <QDebug>
 #include <QDateTime>
-#include "public/Version.h"
+#include "Version.h"
 aboutDialog::aboutDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::aboutDialog)

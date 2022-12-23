@@ -57,7 +57,7 @@ public:
     int                                 warning_type[3];
 
     int col =20;
-    float Radius = 200;
+    float Radius = 100;
     QPointF mousemovepoint;
 
 
@@ -66,13 +66,17 @@ public:
 
     Area area[AREAS];
 
+    typedef pcl::PointXYZRGBA PointT;
+    typedef pcl::PointCloud<PointT> PointCloudT;
+    typedef pcl::PointCloud<PointT>::Ptr PointCloudTPtr;
 
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr tCloud;
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr xCloud;
+
+    PointCloudTPtr tCloud;
+    PointCloudTPtr xCloud;
     std::vector<lidarCloud> lidarcloud;
 
     pcl::PointCloud<Box_Cloud>::Ptr box_cloud[AREAS];
-    QList<pcl::PointXYZRGB> Area2d_point[AREAS];
+    QList<PointT> Area2d_point[AREAS];
 
     void paintEvent(QPaintEvent *);
     void drawArea(QPainter &p, int index);
@@ -82,16 +86,19 @@ public:
     void mouseReleaseEvent(QMouseEvent *);
     void mouseDoubleClickEvent(QMouseEvent *);
     void keyPressEvent(QKeyEvent *event); //键盘按下事件
-    QList<pcl::PointXYZRGB> getIndexPoints(int index);
+    QList<PointT> getIndexPoints(int index);
     void setPaintPoint(QList<QPointF> &tmp);
     void updataPointFunc();
-    pcl::PointXYZRGB  areapoint2d_transform(pcl::PointXYZRGB pt);//绘图坐标系转换到真实坐标系
+    PointT  areapoint2d_transform(PointT pt);//绘图坐标系转换到真实坐标系
     void areaList_T_transform();
 public slots:
     void setPaintSlot(QList<QPointF> tmp,int index);
     void setSplice(int index);
-    void updataPoint(int index,  QList<pcl::PointXYZRGB> ps);
+    void updataPoint(int index,  QList<PointT> ps);
     void UpdateArea_index(int index);
+
+    void setCentralArea(const int& x,const int& y);
+    void setAreaSize(int radius);
 
 
 signals:

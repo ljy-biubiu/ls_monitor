@@ -1,0 +1,64 @@
+{
+   "CameraBase" : {
+      "code" : "ls123456",
+      "ip" : "127.0.0.1",
+      "name" : "admin123"
+   },
+   "ComunicationData" : null,
+   "GroundParamIn" : {
+      "gridNumX" : 2,
+      "gridNumY" : 3,
+      "max_monitor_angle" : 0,
+      "min_monitor_angle" : 1
+   },
+   "LidarBase" : {
+      "DataAddress" : "dasdasd",
+      "DeviceId" : 0,
+      "LidarAddress" : "192.168.1.102",
+      "LidarModel" : 0,
+      "ServerAddress" : "",
+      "ServerPort" : 0,
+      "lidarPort" : 2368
+   },
+   "LidarCameraBase" : {
+      "Pos_X" : 0,
+      "Pos_Y" : 0,
+      "Pos_Z" : 10,
+      "Up_X" : 0,
+      "Up_Y" : 0,
+      "Up_Z" : 0,
+      "View_X" : 0,
+      "View_Y" : 0,
+      "View_Z" : 0
+   },
+   "LidarCluster" : {
+      "ClusterTolerance" : 0,
+      "Difference_threshold" : 0,
+      "EuclideanDistance" : 0,
+      "Kvalue" : 0,
+      "MaxClusterSize" : 0,
+      "MinClusterSize" : 0,
+      "Resolution" : 0
+   },
+   "LidarPreset" : {
+      "Base_X" : 0,
+      "Base_Y" : 0,
+      "Base_Z" : 0,
+      "XAngle" : 0,
+      "YAngle" : 0,
+      "ZAngle" : 0,
+      "paintarea_Radius" : 0
+   },
+   "LowerMachineBase" : {
+      "ip" : "192.168.0.23",
+      "port" : 503
+   },
+   "ShipParamIn" : {
+      "boundRadius" : 2,
+      "gridNumX" : 2,
+      "gridNumY" : 2,
+      "max_monitor_angle" : 0,
+      "min_monitor_angle" : 0,
+      "normalRadius" : 2
+   }
+}

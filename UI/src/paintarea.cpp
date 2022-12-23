@@ -1,8 +1,6 @@
 ﻿#include <QPainter>
 #include "QDebug"
-#include "ui_mainwindow.h"
 #include <qapplication.h>
-#include "mainwindow.h"
 #include "paintarea.h"
 #include <QCursor>
 #include <pcl/filters/passthrough.h>
@@ -51,9 +49,9 @@ PaintArea::PaintArea()/*区域绘图初始化*/
         zmin[i] =0;
 
     }
-    tCloud.reset(new pcl::PointCloud<pcl::PointXYZRGB>);
+    tCloud.reset(new pcl::PointCloud<PointT>);
 
-    xCloud.reset(new pcl::PointCloud<pcl::PointXYZRGB>);
+    xCloud.reset(new pcl::PointCloud<PointT>);
 
     for(int i=0;i<AREAS;i++)
     {
@@ -64,6 +62,23 @@ PaintArea::PaintArea()/*区域绘图初始化*/
         area[i].Area2D_point.clear();
     }
     this->setFocusPolicy(Qt::ClickFocus);
+}
+
+void PaintArea::setCentralArea(const int& x,const int& y)
+{
+//    static int cur_x = PAINT_SIZE ;
+//    static int cur_y = PAINT_SIZE ;
+
+//    cur_x = cur_x + x;
+//    cur_y = cur_y + y;
+
+//    centerPoint.setX(x);
+//    centerPoint.setY(y);
+}
+
+void PaintArea::setAreaSize(int radius)
+{
+    LidarInstance.lidar_Radius = radius;
 }
 
 
@@ -97,7 +112,6 @@ void PaintArea::paintEvent(QPaintEvent *event)
         }
         else if(i==col)
         {
-//            qDebug()<<"kPaintSize="<<kPaintSize<<"    col="<<col;
             painter.setPen(QPen(Qt::darkGray, 0));
             painter.drawLine(0,i*PAINT_SIZE/col-1,PAINT_SIZE,i*PAINT_SIZE/col-1);
             painter.drawLine(i*PAINT_SIZE/col-1,0,i*PAINT_SIZE/col-1,PAINT_SIZE+0);
@@ -147,6 +161,13 @@ void PaintArea::paintEvent(QPaintEvent *event)
 
     QPointF p1;
 
+
+    // std::cout<<"00000000000000000000000000000000000000000000"<<std::endl;
+    // std::cout<<"flagAllCloud"<<std::endl;
+    // std::cout<<flagAllCloud<<std::endl;
+    // std::cout<<"00000000000000000000000000000000000000000000"<<std::endl;
+    // std::cout<<"00000000000000000000000000000000000000000000"<<std::endl;
+
     //全部点云
     if(flagAllCloud == true)
     {
@@ -162,9 +183,9 @@ void PaintArea::paintEvent(QPaintEvent *event)
         }
     }
     //防护区域内点云
-    else if(flagPartCloud == true)
+    else if(true)
     {
-        painter1.setPen(QPen(Qt::red, 2));//设置画笔的颜色/点云的颜色
+        painter1.setPen(QPen(Qt::white, 2));//设置画笔的颜色/点云的颜色
 
         for(size_t j = 0;j < xCloud->size();j++)
         {
@@ -195,7 +216,7 @@ void PaintArea::drawArea(QPainter &painter, int index)
     painter.scale(zoom, zoom);
     for(int i = 0; i < 3; i++)
     {//绘制区域
-        QList<pcl::PointXYZRGB> tmp = area[i].Area2D_point;
+        QList<PointT> tmp = area[i].Area2D_point;
         if(i==0)
             painter.setPen(QPen(Qt::red, 2/zoom));
         else if(i==1)
@@ -210,7 +231,6 @@ void PaintArea::drawArea(QPainter &painter, int index)
             p1 = QPointF(tmp[k].x+rx, tmp[k].y + ry);
             p2 = QPointF(tmp[(k+1)%tmp.size()].x+rx, tmp[(k+1)%tmp.size()].y + ry);
             painter.drawLine(QLineF(p1,p2));
-
         }
 
         for(int j = 0; j < tmp.size(); j++)
@@ -268,13 +288,14 @@ out:
 
 void PaintArea::mousePressEvent(QMouseEvent *event)/*鼠标按键事件*/
 {
+
     qreal rx,ry;
     rx = centerPoint.rx();
     ry = centerPoint.ry();
     if(event->button()== Qt::RightButton)// 右键删除坐标点
     {
         for(int i = 0; i < area[curPolygonPos-1].Area2D_point.size(); i++){// for(int i = 0; i < area[curPolygonPos-1].Area2D_point.size(); i++)
-            pcl::PointXYZRGB p = area[curPolygonPos-1].Area2D_point.at(i);
+            PointT p = area[curPolygonPos-1].Area2D_point.at(i);
 
             qreal x = p.x*zoom + rx;
             qreal y = p.y*zoom + ry;
@@ -292,10 +313,13 @@ void PaintArea::mousePressEvent(QMouseEvent *event)/*鼠标按键事件*/
     else if(event->button() == Qt::LeftButton  ) // 左键选择坐标
     {
 
+        std::cout<<"+++++++++++++++++++++++++++++++++"<<std::endl;
+        std::cout<<curPolygonPos<<std::endl;
+
         leftsel = true;
         for(int i = 0; i <  area[curPolygonPos-1].Area2D_point.size(); i++)
         {
-            pcl::PointXYZRGB p = area[curPolygonPos-1].Area2D_point.at(i);
+            PointT p = area[curPolygonPos-1].Area2D_point.at(i);
             qreal x = p.x*zoom + rx;
             qreal y = p.y*zoom + ry;
             if(qAbs(x - event->pos().rx())<5 && qAbs(y - event->pos().ry())< 5)
@@ -326,14 +350,12 @@ void PaintArea::mouseMoveEvent(QMouseEvent *event)/*鼠标移动事件*/
     mousemovepoint.setX(event->x()/zoom);
     mousemovepoint.setY(event->y()/zoom);
 
-  //  qDebug()<<"event.x="<<mousemovepoint.x()<<mousemovepoint.y();
-
 
     //在点附近变十字 按键后拖
     setCursor(Qt::ArrowCursor);/*设置鼠标样式*/
     for(int i = 0; i < area[curPolygonPos-1].Area2D_point.size(); i++)
     {
-        pcl::PointXYZRGB p = area[curPolygonPos-1].Area2D_point.at(i);
+        PointT p = area[curPolygonPos-1].Area2D_point.at(i);
         qreal x = p.x*zoom + rx;
         qreal y = p.y*zoom + ry;
         if(qAbs(x - event->pos().rx())<5 && qAbs(y - event->pos().ry())< 5)
@@ -386,7 +408,7 @@ void PaintArea::mouseReleaseEvent(QMouseEvent *event)/*鼠标释放事件*/
         qDebug()<<"x"<<x<<"y"<<y<<"   curPolygonPos=" <<curPolygonPos;
 
         index = area[curPolygonPos-1].Area2D_point.size();
-        pcl::PointXYZRGB pt,pt_T;
+        PointT pt,pt_T;
         pt.x =x;pt.y =y;pt.z=0;pt.r=255;pt.g =0;pt.b=0;
         area[curPolygonPos-1].Area2D_point.insert(index,pt);
 
@@ -409,7 +431,7 @@ void PaintArea::mouseReleaseEvent(QMouseEvent *event)/*鼠标释放事件*/
         qreal x = (tmp.rx() - rx)/zoom;
         qreal y = (tmp.ry() - ry)/zoom;
 
-        pcl::PointXYZRGB pt,pt_T;
+        PointT pt,pt_T;
         pt.x=x;
         pt.y=y;
         pt_T = areapoint2d_transform(pt);
@@ -438,7 +460,7 @@ void PaintArea::mouseReleaseEvent(QMouseEvent *event)/*鼠标释放事件*/
 void PaintArea::mouseDoubleClickEvent(QMouseEvent *event)
 {
     qreal x,y;
-    pcl::PointXYZRGB p2;
+    PointT p2;
     int tsize;
     if(event->button() == Qt::LeftButton)
     {
@@ -446,7 +468,7 @@ void PaintArea::mouseDoubleClickEvent(QMouseEvent *event)
         qreal ry = centerPoint.ry();
         for(int i = 0; i < area[curPolygonPos-1].Area2D_point.size(); i++)
         {
-            pcl::PointXYZRGB p = area[curPolygonPos-1].Area2D_point.at(i);
+            PointT p = area[curPolygonPos-1].Area2D_point.at(i);
             qreal x = p.x*zoom + rx;
             qreal y = p.y*zoom + ry;
             if(qAbs(x - event->pos().rx())<5*zoom && qAbs(y - event->pos().ry())< 5*zoom)
@@ -460,7 +482,7 @@ void PaintArea::mouseDoubleClickEvent(QMouseEvent *event)
                 p2 = area[curPolygonPos-1].Area2D_point.at((i+1)%tsize);
                 x = (p2.x + p.x)/2;
                 y = (p2.y + p.y)/2;
-                pcl::PointXYZRGB pt,pt_T;
+                PointT pt,pt_T;
                 pt.x =x;pt.y =y;pt.z=0;pt.r=255;pt.g =0;pt.b=0;
                 area[curPolygonPos-1].Area2D_point.insert((i+1)%tsize,pt);
                 pt_T =areapoint2d_transform(pt);
@@ -491,7 +513,7 @@ void PaintArea::keyPressEvent(QKeyEvent *event) //键盘按下事件
 }
 
 
-QList<pcl::PointXYZRGB> PaintArea::getIndexPoints(int index)
+QList<PointT> PaintArea::getIndexPoints(int index)
 {
     return area[index-1].Area2D_point;
 }
@@ -527,13 +549,13 @@ void PaintArea::setSplice(int index)
         spliceflag = false;
 }
 
-void PaintArea::updataPoint(int index, QList<pcl::PointXYZRGB> ps)
+void PaintArea::updataPoint(int index, QList<PointT> ps)
 {
 
     float msx = PAINT_SIZE/2 /LidarInstance.lidar_Radius;
     float msy = PAINT_SIZE/2 /LidarInstance.lidar_Radius;
     area[index-1].Area2D_point_T.clear();
-    pcl::PointXYZRGB point;
+    PointT point;
     for(int i = 0; i < ps.size(); i++){
         point.x = ps[i].x/msx;
         point.y = ps[i].y/msy*(-1.0);
@@ -553,11 +575,11 @@ void PaintArea::UpdateArea_index(int index)
 }
 
 
-pcl::PointXYZRGB PaintArea::areapoint2d_transform(pcl::PointXYZRGB pt)//绘图坐标系转换到真实坐标系
+PointT PaintArea::areapoint2d_transform(PointT pt)//绘图坐标系转换到真实坐标系
 {
     float msx = PAINT_SIZE/2 /LidarInstance.lidar_Radius;
     float msy = PAINT_SIZE/2 /LidarInstance.lidar_Radius;
-    pcl::PointXYZRGB point;
+    PointT point;
     point.x =pt.x/msx;
     point.y =pt.y/msy*(-1.0);
     return point;
@@ -575,7 +597,7 @@ void PaintArea::areaList_T_transform()//绘图坐标系转换到真实坐标系
         {
             qreal x = area[index].Area2D_point_T[i].x*msx;
             qreal y = area[index].Area2D_point_T[i].y/(-1.0)*msy;
-            pcl::PointXYZRGB point;
+            PointT point;
             point.x =x;point.y=y;
             area[index].Area2D_point.push_back(point);
         }

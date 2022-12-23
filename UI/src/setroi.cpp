@@ -52,7 +52,6 @@ void  SetROI::showPoint()
     ui->tableWidget_2->clearSelection();//a取消选中行
 
     tableRowcount = area[area_index].Area2D_point_T.size();
-    qDebug()<<"area[area_index].Area2D_point_T.size()======="<<area[area_index].Area2D_point_T.size();
 
     ui->tableWidget_2->setRowCount(tableRowcount);
 
@@ -68,7 +67,6 @@ void  SetROI::showPoint()
         row.itemy.setText(text2);
 
         list_tableItem << row;
-        //        qDebug()<<&list_tableItem[i].itemx<<list_tableItem.size()<<text1;
         ui->tableWidget_2->setItem(i, 0, &list_tableItem[i].itemx);
         ui->tableWidget_2->setItem(i, 1, &list_tableItem[i].itemy);
 
@@ -150,4 +148,19 @@ void SetROI::on_lineEdit_Area_height_min_textChanged(const QString &arg1)
 {
     area[area_index].Area_height_down = arg1.toFloat();
     emit sigaltablepaint();
+}
+
+//void SetROI::on_lineEdit_editingFinished(const QString &arg1)
+//{
+//    emit sigalareasize();
+//}
+
+void SetROI::on_lineEdit_textChanged(const QString &arg1)
+{
+    emit sigalareasize(arg1.toInt());
+}
+
+void SetROI::on_pushButton_comfire_clicked()
+{
+    emit sigSaveAreaData();
 }
